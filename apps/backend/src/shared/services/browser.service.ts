@@ -662,7 +662,7 @@ export class BrowserService {
         });
         return;
       } catch (error) {
-        lastError = error as Error;
+        lastError = error instanceof Error ? error : new Error(String(error));
         log.warn({ attempt: i + 1, maxRetries, err: error }, 'Navigation attempt failed');
         await this.humanDelay(1000, 3000);
       }

@@ -646,7 +646,7 @@ class ScrapingService {
           );
           break;
         } catch (error) {
-          const err = error as Error;
+          const err = error instanceof Error ? error : new Error(String(error));
           lastLoginError = err;
           jobLog.warn(
             { credentialId: credentials.id, locationId: credentials.locationId, err },
@@ -766,7 +766,7 @@ class ScrapingService {
       const cacheStats = cache.getStats();
       jobLog.debug({ cacheSize: cacheStats.cacheSize }, 'Cache stats');
     } catch (error) {
-      const errorMessage = (error as Error).message;
+      const errorMessage = error instanceof Error ? error.message : String(error);
       jobLog.error({ err: error }, 'Scrape job failed');
 
       job.status = 'failed';
@@ -850,7 +850,7 @@ class ScrapingService {
           skippedCount: products.length - matchedProducts.length,
         };
       } catch (error) {
-        const err = error as Error;
+        const err = error instanceof Error ? error : new Error(String(error));
         batchLog.error({ err }, 'Batch save error');
         return {
           batchSize: products.length,

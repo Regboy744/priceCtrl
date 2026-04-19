@@ -61,12 +61,26 @@ class OrderingService {
 
     const startTime = Date.now();
 
-    // Process all suppliers in parallel, each with a per-supplier timeout
-    const results = await Promise.all(
+    // Process all suppliers in parallel, each with a per-supplier timeout.
+    // Use allSettled so an unexpected throw from one supplier (e.g. handler
+    // cleanup failing in the finally block) can't abort the whole submission.
+    const settled = await Promise.allSettled(
       request.supplier_orders.map((supplierOrder) =>
         this.processSupplierOrderWithTimeout(supplierOrder, request.location_id)
       )
     );
+
+    const results: SupplierOrderResult[] = settled.map((outcome, idx) => {
+      if (outcome.status === 'fulfilled') return outcome.value;
+      const supplierOrder = request.supplier_orders[idx]!;
+      log.error(
+        { supplierId: supplierOrder.supplier_id, err: outcome.reason },
+        'Supplier order rejected unexpectedly'
+      );
+      const handler = getOrderHandler(supplierOrder.supplier_id);
+      if (!handler) return this.buildNoHandlerResult(supplierOrder);
+      return this.buildErrorResult(handler, supplierOrder.items, outcome.reason);
+    });
 
     const duration = ((Date.now() - startTime) / 1000).toFixed(1);
     log.info({ supplierCount, durationSeconds: Number(duration) }, 'All suppliers processed');

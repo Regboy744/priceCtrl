@@ -43,7 +43,17 @@ function sessionCacheKey(
 ): string {
   switch (strategy) {
     case 'per_job':
-      return `job:${jobId ?? randomUUID()}`;
+      if (!jobId) {
+        // Without a jobId the callsite can't bind to a job — fall back to a
+        // stable key (ideally scoped to the supplier) so sessionIdStore
+        // doesn't grow unboundedly with random UUIDs that are never read again.
+        log.warn(
+          { supplierKey },
+          'per_job session requested without jobId — using stable fallback key'
+        );
+        return `job:default:${supplierKey ?? 'unknown'}`;
+      }
+      return `job:${jobId}`;
     case 'per_supplier':
       return `supplier:${supplierKey ?? 'default'}`;
     case 'per_browser':
@@ -243,7 +253,7 @@ class ProxyService {
       );
       return result;
     } catch (err) {
-      const error = err as Error;
+      const error = err instanceof Error ? err : new Error(String(err));
       const latency = Date.now() - startMs;
       log.error({ pool, err: error, latencyMs: latency }, 'Proxy test FAILED');
       return { ok: false, error: error.message, latencyMs: latency };
@@ -266,7 +276,7 @@ class ProxyService {
       try {
         return await fn();
       } catch (err) {
-        lastError = err as Error;
+        lastError = err instanceof Error ? err : new Error(String(err));
         const isRetryable = this.isRetryableError(lastError);
 
         log.warn(

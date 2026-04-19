@@ -15,13 +15,14 @@
  * - Reduces memory usage for large catalogs (50K+ products)
  */
 
+import { curlService } from '../../../shared/services/curl.service.js';
 import type { SupplierCredentials } from '../../../shared/services/vault.service.js';
 import { BaseScraper } from '../../scraping/base.scraper.js';
 import type {
   ProductBatchSaveCallback,
   StreamingScrapeStats,
 } from '../../scraping/scraping.types.js';
-import { httpLogin, musgraveApiService } from './musgrave.api.js';
+import { httpLogin, MusgraveApiService } from './musgrave.api.js';
 import { MUSGRAVE_CONFIG } from './musgrave.config.js';
 import { transformApiProducts } from './musgrave.parser.js';
 import type { MusgraveAuthTokens } from './musgrave.types.js';
@@ -45,6 +46,9 @@ export class MusgraveScraper extends BaseScraper {
   /** Current credentials for re-authentication */
   private currentCredentials: SupplierCredentials | null = null;
 
+  /** Per-scrape API service instance — no shared module-level state. */
+  private apiService: MusgraveApiService | null = null;
+
   /**
    * No browser needed — override to skip Puppeteer initialization entirely.
    */
@@ -65,7 +69,6 @@ export class MusgraveScraper extends BaseScraper {
     this.log.debug('Logging in via HTTP (OAuth2 password grant)');
 
     this.authTokens = await httpLogin(credentials.username, credentials.password);
-    musgraveApiService.setTokens(this.authTokens);
 
     this.log.info('HTTP login successful, API tokens set');
   }
@@ -86,10 +89,10 @@ export class MusgraveScraper extends BaseScraper {
         this.currentCredentials.username,
         this.currentCredentials.password
       );
-      musgraveApiService.setTokens(this.authTokens);
+      this.apiService?.setTokens(this.authTokens);
       return this.authTokens;
     } catch (error) {
-      const err = error as Error;
+      const err = error instanceof Error ? error : new Error(String(error));
       this.log.error({ err }, 'Re-authentication failed');
       return null;
     }
@@ -130,13 +133,13 @@ export class MusgraveScraper extends BaseScraper {
     };
 
     try {
-      // Reset API service state for this scrape
-      musgraveApiService.resetConcurrency();
-      musgraveApiService.setTokens(this.authTokens);
+      // Fresh API service instance — isolated from other scrapes.
+      this.apiService = new MusgraveApiService();
+      this.apiService.setTokens(this.authTokens);
 
       // Fetch all products using parallel API requests
       // Products are delivered progressively via callback
-      const apiStats = await musgraveApiService.fetchAllProducts(
+      const apiStats = await this.apiService.fetchAllProducts(
         // Re-authentication callback for 401 errors
         () => this.reauthenticate(),
 
@@ -194,23 +197,28 @@ export class MusgraveScraper extends BaseScraper {
 
       return stats;
     } catch (error) {
-      const err = error as Error;
+      const err = error instanceof Error ? error : new Error(String(error));
       this.log.error({ err }, 'Error during API scrape');
-      throw error;
+      throw err;
     }
   }
 
   /**
    * Health check — verify the Musgrave API is accessible.
+   * Routes through the supplier proxy so we're checking the same egress path
+   * the scrape will use, not the raw VPS IP.
    */
   async healthCheck(): Promise<boolean> {
     try {
-      const res = await fetch(CONFIG.personalizationUrl, {
-        method: 'HEAD',
-        signal: AbortSignal.timeout(10_000),
+      const res = await curlService.fetch(CONFIG.personalizationUrl, {
+        timeout: 10_000,
+        supplierKey: this.supplierName,
       });
-      const ok = res.status < 500;
-      this.log.debug({ status: res.status }, ok ? 'Health check passed' : 'Health check failed');
+      const ok = res.statusCode < 500;
+      this.log.debug(
+        { status: res.statusCode },
+        ok ? 'Health check passed' : 'Health check failed'
+      );
       return ok;
     } catch (error) {
       this.log.error({ err: error }, 'Health check failed');
@@ -222,7 +230,8 @@ export class MusgraveScraper extends BaseScraper {
    * Cleanup resources.
    */
   async cleanup(): Promise<void> {
-    musgraveApiService.clearTokens();
+    this.apiService?.clearTokens();
+    this.apiService = null;
     this.authTokens = null;
     this.currentCredentials = null;
     await super.cleanup();

@@ -113,6 +113,14 @@ class CurlService {
           { supplierKey: options.supplierKey, pool: creds.pool, jobId: options.jobId },
           'curl egress via proxy'
         );
+      } else {
+        // Resolved pool is disabled. Refuse to silently leak the VPS IP in
+        // production; warn in dev so local runs can still work without proxies.
+        const msg = `Proxy pool disabled for supplier "${options.supplierKey}" — request would go DIRECT`;
+        if (env.isProd) {
+          throw new Error(`[curl.service] ${msg}. Enable the pool or remove supplierKey.`);
+        }
+        log.warn({ supplierKey: options.supplierKey, jobId: options.jobId }, msg);
       }
     }
 
@@ -174,7 +182,7 @@ class CurlService {
 
       return { body, statusCode, setCookies };
     } catch (error) {
-      const err = error as Error;
+      const err = error instanceof Error ? error : new Error(String(error));
       log.error({ url, err }, 'curl-impersonate request failed');
       throw new Error(`curl request failed for ${url}: ${err.message}`);
     }

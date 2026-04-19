@@ -10,6 +10,7 @@
  * This is based on the proven approach from saveMKPDataDb.js
  */
 
+import { curlService } from '../../../shared/services/curl.service.js';
 import { createLogger } from '../../../shared/services/logger.service.js';
 import { MUSGRAVE_CONFIG } from './musgrave.config.js';
 import type {
@@ -25,6 +26,9 @@ import type {
 } from './musgrave.types.js';
 
 const CONFIG = MUSGRAVE_CONFIG;
+
+/** Canonical supplier key — matches the entry in supplierProxyPolicies. */
+const SUPPLIER_KEY = 'Musgrave Marketplace';
 
 // ============ Utility Functions ============
 
@@ -68,7 +72,7 @@ export function decodeApiToken(urlEncodedToken: string): string {
 
     return parsedToken.apiToken;
   } catch (error) {
-    const err = error as Error;
+    const err = error instanceof Error ? error : new Error(String(error));
     log.error({ err }, 'Error decoding token');
     throw new Error(`Failed to decode API token: ${err.message}`);
   }
@@ -132,7 +136,11 @@ export function generateOffsets(startOffset: number, count: number): number[] {
  *
  * Returns the same MusgraveAuthTokens the scraper expects.
  */
-export async function httpLogin(username: string, password: string): Promise<MusgraveAuthTokens> {
+export async function httpLogin(
+  username: string,
+  password: string,
+  jobId?: string
+): Promise<MusgraveAuthTokens> {
   // Step 1: POST /token with OAuth2 password grant
   const tokenBody = new URLSearchParams({
     grant_type: 'password',
@@ -144,7 +152,7 @@ export async function httpLogin(username: string, password: string): Promise<Mus
 
   log.debug('Requesting OAuth2 token via HTTP');
 
-  const tokenRes = await fetch(CONFIG.tokenUrl, {
+  const tokenRes = await curlService.fetch(CONFIG.tokenUrl, {
     method: 'POST',
     headers: {
       'content-type': 'application/x-www-form-urlencoded',
@@ -153,17 +161,25 @@ export async function httpLogin(username: string, password: string): Promise<Mus
       referer: `${CONFIG.baseUrl}/`,
     },
     body: tokenBody.toString(),
-    signal: AbortSignal.timeout(CONFIG.api.requestTimeout),
+    timeout: CONFIG.api.requestTimeout,
+    supplierKey: SUPPLIER_KEY,
+    jobId,
   });
 
-  if (!tokenRes.ok) {
-    const text = await tokenRes.text().catch(() => '');
+  if (tokenRes.statusCode < 200 || tokenRes.statusCode >= 300) {
     throw new Error(
-      `Token request failed: HTTP ${tokenRes.status} ${tokenRes.statusText} — ${text}`
+      `Token request failed: HTTP ${tokenRes.statusCode} — ${tokenRes.body.slice(0, 500)}`
     );
   }
 
-  const tokenData = (await tokenRes.json()) as MusgraveTokenResponse;
+  let tokenData: MusgraveTokenResponse;
+  try {
+    tokenData = JSON.parse(tokenRes.body) as MusgraveTokenResponse;
+  } catch (err) {
+    throw new Error(
+      `Token response not JSON: ${err instanceof Error ? err.message : String(err)}`
+    );
+  }
 
   if (!tokenData.access_token) {
     throw new Error('Token response missing access_token');
@@ -172,25 +188,32 @@ export async function httpLogin(username: string, password: string): Promise<Mus
   log.debug({ expiresIn: tokenData.expires_in }, 'OAuth2 token obtained');
 
   // Step 2: GET /personalization with the access token
-  const persRes = await fetch(CONFIG.personalizationUrl, {
-    method: 'GET',
+  const persRes = await curlService.fetch(CONFIG.personalizationUrl, {
     headers: {
       accept: 'application/json',
       'authentication-token': tokenData.access_token,
       origin: CONFIG.baseUrl,
       referer: `${CONFIG.baseUrl}/`,
     },
-    signal: AbortSignal.timeout(CONFIG.api.requestTimeout),
+    timeout: CONFIG.api.requestTimeout,
+    supplierKey: SUPPLIER_KEY,
+    jobId,
   });
 
-  if (!persRes.ok) {
-    const text = await persRes.text().catch(() => '');
+  if (persRes.statusCode < 200 || persRes.statusCode >= 300) {
     throw new Error(
-      `Personalization request failed: HTTP ${persRes.status} ${persRes.statusText} — ${text}`
+      `Personalization request failed: HTTP ${persRes.statusCode} — ${persRes.body.slice(0, 500)}`
     );
   }
 
-  const persData = (await persRes.json()) as MusgravePersonalizationResponse;
+  let persData: MusgravePersonalizationResponse;
+  try {
+    persData = JSON.parse(persRes.body) as MusgravePersonalizationResponse;
+  } catch (err) {
+    throw new Error(
+      `Personalization response not JSON: ${err instanceof Error ? err.message : String(err)}`
+    );
+  }
 
   if (!persData.pgid) {
     throw new Error('Personalization response missing pgid');
@@ -217,33 +240,35 @@ export async function httpLogin(username: string, password: string): Promise<Mus
 export async function fetchSinglePage(
   apiToken: string,
   pgId: string,
-  offset: number
+  offset: number,
+  jobId?: string
 ): Promise<MusgravePageFetchResult> {
   const url = buildApiUrl(pgId, offset);
 
   try {
-    const response = await fetch(url, {
-      method: 'GET',
+    const response = await curlService.fetch(url, {
       headers: {
         accept: 'application/json',
         'authentication-token': apiToken,
       },
-      signal: AbortSignal.timeout(CONFIG.api.requestTimeout),
+      timeout: CONFIG.api.requestTimeout,
+      supplierKey: SUPPLIER_KEY,
+      jobId,
     });
 
-    if (!response.ok) {
+    if (response.statusCode < 200 || response.statusCode >= 300) {
       return {
         success: false,
         data: [],
         offset,
         error: {
-          status: response.status,
-          message: response.statusText || `HTTP ${response.status}`,
+          status: response.statusCode,
+          message: `HTTP ${response.statusCode}`,
         },
       };
     }
 
-    const data = (await response.json()) as MusgraveApiResponse;
+    const data = JSON.parse(response.body) as MusgraveApiResponse;
 
     return {
       success: true,
@@ -251,7 +276,7 @@ export async function fetchSinglePage(
       offset,
     };
   } catch (error) {
-    const err = error as Error;
+    const err = error instanceof Error ? error : new Error(String(error));
     return {
       success: false,
       data: [],
@@ -280,7 +305,8 @@ export async function fetchSinglePage(
 export async function fetchParallelPages(
   apiToken: string,
   pgId: string,
-  offsets: number[]
+  offsets: number[],
+  jobId?: string
 ): Promise<MusgravePageFetchResult[]> {
   const { parallel } = CONFIG;
 
@@ -291,7 +317,7 @@ export async function fetchParallelPages(
 
     await delay(staggerDelay + randomDelay);
 
-    return fetchSinglePage(apiToken, pgId, offset);
+    return fetchSinglePage(apiToken, pgId, offset, jobId);
   });
 
   return Promise.all(promises);
@@ -311,6 +337,11 @@ export async function fetchParallelPages(
 export class MusgraveApiService {
   private tokens: MusgraveAuthTokens | null = null;
   private concurrency: number = CONFIG.parallel.concurrency;
+  private readonly jobId: string | undefined;
+
+  constructor(options?: { jobId?: string }) {
+    this.jobId = options?.jobId;
+  }
 
   /**
    * Set authentication tokens.
@@ -409,7 +440,12 @@ export class MusgraveApiService {
 
       try {
         // Fetch pages in parallel
-        const results = await fetchParallelPages(this.tokens.apiToken, this.tokens.pgId, offsets);
+        const results = await fetchParallelPages(
+          this.tokens.apiToken,
+          this.tokens.pgId,
+          offsets,
+          this.jobId
+        );
 
         // Separate successes and errors
         const errors = results.filter((r) => !r.success);
@@ -489,7 +525,7 @@ export class MusgraveApiService {
           wasRateLimited = false;
         }
       } catch (error) {
-        const err = error as Error;
+        const err = error instanceof Error ? error : new Error(String(error));
         log.error({ err }, 'Batch error');
         stats.failedBatches++;
 
@@ -515,6 +551,5 @@ export class MusgraveApiService {
   }
 }
 
-// ============ Singleton Export ============
-
-export const musgraveApiService = new MusgraveApiService();
+// NOTE: no module-level singleton. Construct `new MusgraveApiService()` per
+// scrape so `tokens` and `concurrency` can't race between concurrent runs.

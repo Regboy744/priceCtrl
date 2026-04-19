@@ -205,10 +205,8 @@ export abstract class BaseScraper implements ISupplierScraper {
       await this.browserService.safeNavigate(page, url);
       this.log.debug({ url }, 'Navigated to URL');
     } catch (error) {
-      throw new NavigationError(
-        `Failed to navigate to ${url}: ${(error as Error).message}`,
-        this.supplierId
-      );
+      const msg = error instanceof Error ? error.message : String(error);
+      throw new NavigationError(`Failed to navigate to ${url}: ${msg}`, this.supplierId);
     }
   }
 
@@ -466,7 +464,7 @@ export abstract class BaseScraper implements ISupplierScraper {
         this.credentials = credentials;
         return;
       } catch (error) {
-        lastError = error as Error;
+        lastError = error instanceof Error ? error : new Error(String(error));
         this.log.warn({ attempt, err: error }, 'Login attempt failed');
 
         try {
