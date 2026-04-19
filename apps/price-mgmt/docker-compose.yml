@@ -1,11 +1,13 @@
 services:
   app:
-    build: .
-    container_name: ssrs-price-costs
+    build:
+      context: ../..
+      dockerfile: apps/price-mgmt/Dockerfile
+    container_name: pricectrl-price-mgmt
     ports:
       - "3001:3001"
 
-    # Chrome in Docker needs extra shared memory
+    # Chrome in Docker needs extra shared memory.
     shm_size: "2gb"
 
     environment:
@@ -13,26 +15,28 @@ services:
       - HEADLESS=true
 
     volumes:
-      # ── Live-edit mounts (changes on host are immediately visible) ──
-      - ./src:/app/src
-      - ./config:/app/config
-      - ./tsconfig.json:/app/tsconfig.json
-      - ./package.json:/app/package.json
-      - ./pnpm-lock.yaml:/app/pnpm-lock.yaml
-      - ./.env:/app/.env
+      # Live-edit mounts (changes on host are immediately visible).
+      # Paths rooted at the app dir inside the container (WORKDIR).
+      - ./src:/repo/apps/price-mgmt/src
+      - ./config:/repo/apps/price-mgmt/config
+      - ./tsconfig.json:/repo/apps/price-mgmt/tsconfig.json
+      - ./package.json:/repo/apps/price-mgmt/package.json
+      - ./.env:/repo/apps/price-mgmt/.env
 
-      # ── Persist outputs and browser profile on host ─────────────────
-      - ./outputs:/app/outputs
-      - ./.playwright-profile:/app/.playwright-profile
+      # Persist outputs and browser profile on host.
+      - ./outputs:/repo/apps/price-mgmt/outputs
+      - ./.playwright-profile:/repo/apps/price-mgmt/.playwright-profile
 
-      # ── Isolate node_modules inside container (avoids arch mismatch) ─
-      - node_modules:/app/node_modules
+      # Isolate node_modules inside container (avoids arch mismatch).
+      - node_modules:/repo/apps/price-mgmt/node_modules
+      - root_node_modules:/repo/node_modules
 
-      # ── Compiled JS visible on host for inspection ──────────────────
-      - ./dist:/app/dist
+      # Compiled JS visible on host for inspection.
+      - ./dist:/repo/apps/price-mgmt/dist
 
-    # Restart on crash (useful for long-running scrape jobs)
+    # Restart on crash (useful for long-running scrape jobs).
     restart: unless-stopped
 
 volumes:
   node_modules:
+  root_node_modules:

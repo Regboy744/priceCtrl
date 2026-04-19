@@ -1,6 +1,16 @@
+# syntax=docker/dockerfile:1.7
+#
+# Build context: monorepo root (/home/regboy/coding/priceCtrl).
+# Build command:
+#   docker build -f apps/price-mgmt/Dockerfile -t pricectrl-price-mgmt:latest .
+# Or via docker-compose from apps/price-mgmt/ (compose.yml sets context=../..).
+#
+# price-mgmt has no workspace deps today, but building from root gives us a
+# single .dockerignore + consistent tooling with the other apps.
+
 FROM node:22-bookworm
 
-# ── Install Google Chrome stable + all required system libs ──────────────
+# Install Google Chrome stable + all required system libs for Playwright.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
        wget gnupg ca-certificates \
@@ -29,22 +39,32 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends google-chrome-stable \
     && rm -rf /var/lib/apt/lists/*
 
-# ── Enable pnpm via corepack ────────────────────────────────────────────
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# Enable pnpm via corepack. Pin matches root packageManager field.
+RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
 
-WORKDIR /app
+WORKDIR /repo
 
-# ── Install dependencies (cached layer) ─────────────────────────────────
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+# Layer cache: copy workspace manifests first. Even though price-mgmt
+# has no workspace deps today, this lets pnpm resolve against the root
+# lockfile identically to the other apps.
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY apps/price-mgmt/package.json ./apps/price-mgmt/
 
-# ── Copy project source ─────────────────────────────────────────────────
-COPY . .
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm config set store-dir /pnpm/store \
+    && pnpm install --frozen-lockfile --filter=ssrs-price-costs...
 
-# ── Initial TypeScript build ────────────────────────────────────────────
-RUN pnpm build
+# Copy price-mgmt source. Other apps excluded by the root .dockerignore
+# honoring the dockerignore globs; this COPY is scoped to one app dir.
+COPY apps/price-mgmt ./apps/price-mgmt/
 
-EXPOSE 3000
+# Build TypeScript up-front so the container starts fast even in dev.
+RUN pnpm --filter=ssrs-price-costs build
 
-ENTRYPOINT ["/app/docker-entrypoint.sh"]
+# App runs from its package dir so relative paths in config/env match.
+WORKDIR /repo/apps/price-mgmt
+
+EXPOSE 3001
+
+ENTRYPOINT ["/repo/apps/price-mgmt/docker-entrypoint.sh"]
 CMD ["pnpm", "dev"]
