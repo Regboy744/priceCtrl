@@ -1,0 +1,117 @@
+# Monitoring stack for the PriceCtrl VPS.
+# Independent lifecycle from the app — bring up/down without touching traffic.
+#
+# Server layout:
+#   ~/pricectrl/
+#     docker-compose.monitoring.yml   (this file)
+#     .env.monitoring                 (holds BESZEL_KEY — see first-run step 3)
+#     monitoring/
+#       beszel_data/                  (hub SQLite + config, auto-created)
+#       beszel_agent_data/            (agent state, auto-created)
+#       portainer_data/               (portainer DB, auto-created)
+#
+# Commands:
+#   docker compose --env-file .env.monitoring -f docker-compose.monitoring.yml up -d
+#   docker compose -f docker-compose.monitoring.yml down
+#   docker compose -f docker-compose.monitoring.yml logs -f <service>
+#
+# Ports to open on VPS firewall (or proxy through Caddy for TLS + auth):
+#   8090  Beszel hub     — metrics dashboard (CPU / RAM / disk / net / containers)
+#   8081  Dozzle         — live log viewer (all containers)
+#   9443  Portainer CE   — container manager (HTTPS, self-signed cert)
+#
+# First-run checklist:
+#   1. Create dirs:
+#        mkdir -p ~/pricectrl/monitoring/{beszel_data,beszel_agent_data,portainer_data}
+#   2. Start hub only:
+#        docker compose -f docker-compose.monitoring.yml up -d beszel-hub
+#      Open http://<vps-ip>:8090 → create admin account
+#      → "Add System" → name: "pricectrl-vps", host: host.docker.internal, port: 45876
+#      → copy the generated PUBLIC KEY
+#   3. Create ~/pricectrl/.env.monitoring:
+#        BESZEL_KEY=ssh-ed25519 AAAA... (paste hub key)
+#   4. Start agent + rest:
+#        docker compose --env-file .env.monitoring -f docker-compose.monitoring.yml up -d
+#   5. Portainer: open https://<vps-ip>:9443 within 5 minutes of first start
+#      → set admin password (first visitor becomes admin — race condition if delayed)
+#   6. Dozzle: open http://<vps-ip>:8081 — NO AUTH by default. Firewall-gate or
+#      enable DOZZLE_AUTH_PROVIDER=simple before exposing publicly.
+
+services:
+  beszel-hub:
+    image: henrygd/beszel:latest
+    container_name: beszel-hub
+    restart: unless-stopped
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./monitoring/beszel_data:/beszel_data
+    extra_hosts:
+      # Lets hub reach agent running in host network mode on same VPS
+      - "host.docker.internal:host-gateway"
+    networks: [monitoring]
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  beszel-agent:
+    image: henrygd/beszel-agent:latest
+    container_name: beszel-agent
+    restart: unless-stopped
+    # Host network = accurate host-level CPU / network / disk metrics.
+    # Agent listens on 45876; hub connects to it via host.docker.internal:45876.
+    network_mode: host
+    volumes:
+      - ./monitoring/beszel_agent_data:/var/lib/beszel-agent
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - LISTEN=45876
+      - KEY=${BESZEL_KEY}
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - DOZZLE_LEVEL=info
+      # For public exposure, enable simple auth:
+      #   DOZZLE_AUTH_PROVIDER: simple
+      # then mount ./monitoring/dozzle_users.yml at /data/users.yml
+      # (see https://dozzle.dev/guide/authentication)
+    networks: [monitoring]
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    ports:
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./monitoring/portainer_data:/data
+    networks: [monitoring]
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  monitoring:
+    driver: bridge
