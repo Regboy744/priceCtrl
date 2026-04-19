@@ -38,31 +38,24 @@ www.pricectrl.com {
 # Paste the resulting $2a$... hash into the basicauth blocks below.
 # ---------------------------------------------------------------------------
 
-# Beszel metrics dashboard
+# Beszel metrics dashboard — uses its own built-in auth (no extra basicauth,
+# otherwise background API polls trigger the browser challenge popup repeatedly).
 monitor.pricectrl.com {
   encode gzip zstd
-  basic_auth {
-    admin $2a$14$BjdC2SjEyofGQTF4rxIcLOo.qFxLjnNw5zOMKfrcod4chgnne.7za
-  }
-  # Beszel's dashboard lives at /_/ — redirect root so the URL is friendly
-  redir / /_/ 302
   reverse_proxy beszel-hub:8090
 }
 
-# Dozzle live log viewer
+# Dozzle live log viewer — NO built-in auth, so gate with Caddy basicauth.
 logs.pricectrl.com {
   encode gzip zstd
   basic_auth {
-    admin $2a$14$BjdC2SjEyofGQTF4rxIcLOo.qFxLjnNw5zOMKfrcod4chgnne.7za
+    admin $2a$14$ty1FbFWXZpDlTCbrMMGHIug.7sDSWsgZ1Ld4BiZZZzTgTyjC0yfQq
   }
   reverse_proxy dozzle:8080
 }
 
-# Portainer container manager
+# Portainer container manager — uses its own admin auth.
 containers.pricectrl.com {
   encode gzip zstd
-  basic_auth {
-    admin $2a$14$BjdC2SjEyofGQTF4rxIcLOo.qFxLjnNw5zOMKfrcod4chgnne.7za
-  }
   reverse_proxy portainer:9000
 }
