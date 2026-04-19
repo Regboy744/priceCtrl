@@ -10,32 +10,34 @@
 #       beszel_agent_data/            (agent state, auto-created)
 #       portainer_data/               (portainer DB, auto-created)
 #
+# Access via Caddy reverse-proxy on subdomains (see Caddyfile):
+#   monitor.pricectrl.com     → Beszel hub
+#   logs.pricectrl.com        → Dozzle
+#   containers.pricectrl.com  → Portainer
+# All protected by basicauth at the Caddy layer + TLS via Let's Encrypt.
+#
+# Host ports (8090 / 8081 / 9000) are ALSO bound to 127.0.0.1 only — useful for
+# SSH-tunnel access and as a failover path. Hetzner cloud firewall keeps them
+# unreachable from the internet.
+#
 # Commands:
 #   docker compose --env-file .env.monitoring -f docker-compose.monitoring.yml up -d
 #   docker compose -f docker-compose.monitoring.yml down
 #   docker compose -f docker-compose.monitoring.yml logs -f <service>
 #
-# Ports to open on VPS firewall (or proxy through Caddy for TLS + auth):
-#   8090  Beszel hub     — metrics dashboard (CPU / RAM / disk / net / containers)
-#   8081  Dozzle         — live log viewer (all containers)
-#   9443  Portainer CE   — container manager (HTTPS, self-signed cert)
-#
 # First-run checklist:
-#   1. Create dirs:
-#        mkdir -p ~/pricectrl/monitoring/{beszel_data,beszel_agent_data,portainer_data}
+#   1. mkdir -p ~/pricectrl/monitoring/{beszel_data,beszel_agent_data,portainer_data}
 #   2. Start hub only:
 #        docker compose -f docker-compose.monitoring.yml up -d beszel-hub
-#      Open http://<vps-ip>:8090 → create admin account
-#      → "Add System" → name: "pricectrl-vps", host: host.docker.internal, port: 45876
-#      → copy the generated PUBLIC KEY
+#      Open https://monitor.pricectrl.com (after DNS + Caddy live) or via tunnel
+#      → create admin → Add System → host: host.docker.internal, port: 45876
+#      → copy the PUBLIC KEY
 #   3. Create ~/pricectrl/.env.monitoring:
 #        BESZEL_KEY=ssh-ed25519 AAAA... (paste hub key)
-#   4. Start agent + rest:
+#   4. Start remaining services:
 #        docker compose --env-file .env.monitoring -f docker-compose.monitoring.yml up -d
-#   5. Portainer: open https://<vps-ip>:9443 within 5 minutes of first start
-#      → set admin password (first visitor becomes admin — race condition if delayed)
-#   6. Dozzle: open http://<vps-ip>:8081 — NO AUTH by default. Firewall-gate or
-#      enable DOZZLE_AUTH_PROVIDER=simple before exposing publicly.
+#   5. Portainer first visit: set admin password fast (first visitor wins — but
+#      Caddy basicauth already gates access, so safe).
 
 services:
   beszel-hub:
@@ -43,13 +45,13 @@ services:
     container_name: beszel-hub
     restart: unless-stopped
     ports:
-      - "8090:8090"
+      - "127.0.0.1:8090:8090"  # localhost-only; Caddy proxies publicly
     volumes:
       - ./monitoring/beszel_data:/beszel_data
     extra_hosts:
       # Lets hub reach agent running in host network mode on same VPS
       - "host.docker.internal:host-gateway"
-    networks: [monitoring]
+    networks: [monitoring, web]
     logging:
       driver: json-file
       options:
@@ -80,16 +82,12 @@ services:
     container_name: dozzle
     restart: unless-stopped
     ports:
-      - "8081:8080"
+      - "127.0.0.1:8081:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       - DOZZLE_LEVEL=info
-      # For public exposure, enable simple auth:
-      #   DOZZLE_AUTH_PROVIDER: simple
-      # then mount ./monitoring/dozzle_users.yml at /data/users.yml
-      # (see https://dozzle.dev/guide/authentication)
-    networks: [monitoring]
+    networks: [monitoring, web]
     logging:
       driver: json-file
       options:
@@ -100,12 +98,15 @@ services:
     image: portainer/portainer-ce:latest
     container_name: portainer
     restart: unless-stopped
+    # Use HTTP (9000) internally; Caddy terminates TLS. Avoids self-signed cert
+    # hassle when proxying. --http-enabled flag required since Portainer 2.19.
+    command: --http-enabled
     ports:
-      - "9443:9443"
+      - "127.0.0.1:9000:9000"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./monitoring/portainer_data:/data
-    networks: [monitoring]
+    networks: [monitoring, web]
     logging:
       driver: json-file
       options:
@@ -115,3 +116,8 @@ services:
 networks:
   monitoring:
     driver: bridge
+  # Shared with the app compose so Caddy can reverse-proxy by container name.
+  # Docker compose prefixes with project dir → external name is "pricectrl_web".
+  web:
+    name: pricectrl_web
+    external: true

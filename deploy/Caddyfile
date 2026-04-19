@@ -1,7 +1,7 @@
 # Caddy config for the PriceCtrl production VPS.
 # Auto-manages TLS via Let's Encrypt (staging on first start, renewals forever).
-# Docker container names (backend, frontend) are DNS-resolvable on the
-# shared compose network.
+# Docker container names (backend, frontend, beszel-hub, dozzle, portainer)
+# are DNS-resolvable on the shared compose network.
 
 {
   email carvalho.ie18@gmail.com
@@ -29,4 +29,40 @@ pricectrl.com {
 # www → apex redirect
 www.pricectrl.com {
   redir https://pricectrl.com{uri} permanent
+}
+
+# ---------------------------------------------------------------------------
+# Monitoring subdomains — all gated by basicauth at the Caddy layer.
+# Generate a password hash locally (never commit the plaintext):
+#   docker run --rm caddy:2-alpine caddy hash-password --plaintext 'yourpass'
+# Paste the resulting $2a$... hash into the basicauth blocks below.
+# ---------------------------------------------------------------------------
+
+# Beszel metrics dashboard
+monitor.pricectrl.com {
+  encode gzip zstd
+  basic_auth {
+    admin $2a$14$BjdC2SjEyofGQTF4rxIcLOo.qFxLjnNw5zOMKfrcod4chgnne.7za
+  }
+  # Beszel's dashboard lives at /_/ — redirect root so the URL is friendly
+  redir / /_/ 302
+  reverse_proxy beszel-hub:8090
+}
+
+# Dozzle live log viewer
+logs.pricectrl.com {
+  encode gzip zstd
+  basic_auth {
+    admin $2a$14$BjdC2SjEyofGQTF4rxIcLOo.qFxLjnNw5zOMKfrcod4chgnne.7za
+  }
+  reverse_proxy dozzle:8080
+}
+
+# Portainer container manager
+containers.pricectrl.com {
+  encode gzip zstd
+  basic_auth {
+    admin $2a$14$BjdC2SjEyofGQTF4rxIcLOo.qFxLjnNw5zOMKfrcod4chgnne.7za
+  }
+  reverse_proxy portainer:9000
 }
