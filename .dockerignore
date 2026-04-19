@@ -1,0 +1,46 @@
+# Build context = monorepo root. Exclude everything that isn't a
+# source input. Dockerfile COPY lines pull in what's needed explicitly.
+
+# Dependencies
+**/node_modules
+.pnpm-store
+
+# Build output
+**/dist
+**/build
+.turbo
+
+# Version control
+.git
+.gitignore
+
+# Env / secrets
+**/.env
+**/.env.*
+!**/.env.example
+**/.npmrc
+
+# IDE
+**/.vscode
+**/.idea
+
+# Docs (except README kept by explicit COPY if ever needed)
+**/*.md
+
+# Test output
+**/coverage
+**/.nyc_output
+
+# Per-app runtime artifacts
+**/screenshots
+**/logs
+**/outputs
+**/.playwright-profile
+
+# Other Dockerfiles / compose
+**/Dockerfile*
+**/docker-compose*
+**/.dockerignore
+
+# Frontend-only junk (if built from here accidentally)
+**/.vite

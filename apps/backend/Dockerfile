@@ -1,44 +1,57 @@
 # syntax=docker/dockerfile:1.7
+#
+# Build context: monorepo root (/home/regboy/coding/priceCtrl).
+# Build command:
+#   docker build -f apps/backend/Dockerfile -t pricectrl-backend:latest .
+#
+# No GitHub Packages auth needed — @pricectrl/contracts is a workspace
+# package resolved locally at build time.
+
 # ============================================================
 # Build Stage
 # ============================================================
-FROM node:20-slim AS builder
+FROM node:22-slim AS builder
 
-WORKDIR /app
+WORKDIR /repo
 
-# Pin pnpm version for reproducible installs
-RUN corepack enable && corepack prepare pnpm@9 --activate
+# Pin pnpm version for reproducible installs. Matches packageManager
+# field in the root package.json.
+RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
 
-# Copy dependency manifests first (layer cache: deps change less often than source)
-COPY package.json pnpm-lock.yaml ./
+# Layer cache: install deps first. Copy only the manifests that affect
+# dependency resolution, not source.
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY apps/backend/package.json ./apps/backend/
+COPY packages/contracts/package.json ./packages/contracts/
 
-# GitHub Packages auth for @regboy744/retailctrl-contracts. Token passed as
-# BuildKit secret so it never enters image layers or history.
-# Build with: DOCKER_BUILDKIT=1 docker build \
-#   --secret id=github_token,env=GITHUB_PERSONAL_ACCESS_TOKEN ...
-RUN --mount=type=secret,id=github_token,required=true \
-    printf '@regboy744:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=%s\nalways-auth=true\n' \
-      "$(cat /run/secrets/github_token)" > .npmrc \
-    && pnpm install --frozen-lockfile \
-    && rm -f .npmrc
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm config set store-dir /pnpm/store \
+    && pnpm install --frozen-lockfile --filter=retailctrl-backend... --filter=@pricectrl/contracts
 
-# Copy only what the build needs (not the entire context)
-COPY tsconfig.json ./
-COPY src/ ./src/
+# Copy source for contracts + backend (scoped to what we actually build)
+COPY packages/contracts/tsconfig.json ./packages/contracts/
+COPY packages/contracts/src ./packages/contracts/src
+COPY apps/backend/tsconfig.json ./apps/backend/
+COPY apps/backend/src ./apps/backend/src
 
-# Compile TypeScript to dist/
-RUN pnpm run build
+# Build contracts first (backend depends on dist/), then backend.
+RUN pnpm --filter=@pricectrl/contracts build \
+    && pnpm --filter=retailctrl-backend build
+
+# Produce a self-contained deployable dir with hoisted node_modules.
+# `pnpm deploy` resolves workspace:* deps by copying contracts/dist
+# into the output's node_modules — no publish, no registry.
+RUN pnpm deploy --legacy --filter=retailctrl-backend --prod /prod
 
 # ============================================================
 # Production Stage
 # ============================================================
-FROM node:20-slim AS runner
+FROM node:22-slim AS runner
 
-LABEL maintainer="RetailCtrl" \
-      description="RetailCtrl scraping backend - Express + Puppeteer + Supabase"
+LABEL maintainer="PriceCtrl" \
+      description="PriceCtrl scraping backend — Express + Puppeteer + Supabase"
 
-# Single layer: tini (init system) + Chromium + all system dependencies
-# tini handles PID 1 duties: signal forwarding to Node/Chromium, zombie reaping
+# Single layer: tini + Chromium + system deps for headless browser
 RUN apt-get update && apt-get install -y --no-install-recommends \
     tini \
     chromium \
@@ -84,22 +97,10 @@ RUN set -eux; \
 
 WORKDIR /app
 
-# Pin same pnpm version as build stage
-RUN corepack enable && corepack prepare pnpm@9 --activate
+# Copy the pnpm-deployed self-contained app (node_modules + dist + package.json).
+COPY --from=builder /prod ./
 
-# Install production dependencies only. Same secret-mounted .npmrc pattern as
-# builder stage — token stays out of final image.
-COPY package.json pnpm-lock.yaml ./
-RUN --mount=type=secret,id=github_token,required=true,uid=0,gid=0 \
-    printf '@regboy744:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=%s\nalways-auth=true\n' \
-      "$(cat /run/secrets/github_token)" > .npmrc \
-    && pnpm install --prod --frozen-lockfile \
-    && rm -f .npmrc
-
-# Copy compiled output from builder
-COPY --from=builder /app/dist ./dist
-
-# Create non-root user for security
+# Non-root user
 RUN groupadd -r appuser && useradd -r -g appuser -d /app appuser \
     && mkdir -p /app/screenshots \
     && chown -R appuser:appuser /app
@@ -109,21 +110,14 @@ USER appuser
 # Puppeteer: skip bundled Chromium download, use system Chromium from apt-get
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
-
-# Runtime defaults
 ENV NODE_ENV=production
 ENV PORT=3000
 
 EXPOSE 3000
 
-# tini as entrypoint: properly forwards SIGTERM to node process and reaps zombie
-# Chromium child processes. Without this, `docker stop` may not trigger graceful shutdown.
 ENTRYPOINT ["/usr/bin/tini", "--"]
-
 STOPSIGNAL SIGTERM
 
-# Health check with 30s start-period to allow for DB initialization
-# (scraper registry + ordering registry make Supabase calls on startup)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
     CMD node -e "fetch('http://localhost:3000/health/live').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"
 
