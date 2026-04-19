@@ -1,13 +1,14 @@
 /// <reference types="vite/client" />
 /// <reference types="unplugin-vue-router/client" />
 
-// Environment variables type declarations
+// Environment variables type declarations.
+// Only PUBLIC values belong here — anything exposed via import.meta.env is
+// baked into the client bundle. Server-only secrets (SERVICE_ROLE_KEY,
+// SB_SECRET_KEY) must never use the VITE_ prefix and must never appear here.
 interface ImportMetaEnv {
  readonly VITE_SUPABASE_URL: string
  readonly VITE_SUPABASE_KEY: string
  readonly VITE_SB_PUBLISHABLE_KEY: string
- readonly VITE_SB_SECRET_KEY: string
- readonly VITE_SERVICE_ROLE_KEY: string
  readonly VITE_API_URL: string
  readonly VITE_DEV_COMPANY_ID?: string
  readonly BASE_URL: string

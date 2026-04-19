@@ -1,10 +1,11 @@
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch } from 'vue'
 
 type Theme = 'light' | 'dark'
 
 const STORAGE_KEY = 'theme'
 
 const theme = ref<Theme>('light')
+const isDark = ref(false)
 
 function getSystemPreference(): Theme {
  if (typeof window === 'undefined') return 'light'
@@ -22,18 +23,15 @@ function applyTheme(newTheme: Theme) {
  }
 }
 
-export function useTheme() {
- const isDark = ref(theme.value === 'dark')
+// One-time module-scoped init. The `theme` ref is shared across every
+// `useTheme()` caller, so the listener must be attached once — not once per
+// component mount (which leaks listeners on every route change / re-render).
+if (typeof window !== 'undefined') {
+ const saved = localStorage.getItem(STORAGE_KEY) as Theme | null
+ theme.value = saved || getSystemPreference()
+ applyTheme(theme.value)
+ isDark.value = theme.value === 'dark'
 
- function toggleTheme() {
-  theme.value = theme.value === 'dark' ? 'light' : 'dark'
- }
-
- function setTheme(newTheme: Theme) {
-  theme.value = newTheme
- }
-
- // Watch for theme changes and apply them
  watch(
   theme,
   (newTheme) => {
@@ -44,23 +42,23 @@ export function useTheme() {
   { immediate: false },
  )
 
- onMounted(() => {
-  // Load saved theme or use system preference
-  const saved = localStorage.getItem(STORAGE_KEY) as Theme | null
-  theme.value = saved || getSystemPreference()
-  applyTheme(theme.value)
-  isDark.value = theme.value === 'dark'
-
-  // Listen for system preference changes
-  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-  const handleChange = (e: MediaQueryListEvent) => {
-   // Only auto-switch if user hasn't set a preference
-   if (!localStorage.getItem(STORAGE_KEY)) {
-    theme.value = e.matches ? 'dark' : 'light'
-   }
+ const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+ mediaQuery.addEventListener('change', (e: MediaQueryListEvent) => {
+  // Only auto-switch if user hasn't set an explicit preference
+  if (!localStorage.getItem(STORAGE_KEY)) {
+   theme.value = e.matches ? 'dark' : 'light'
   }
-  mediaQuery.addEventListener('change', handleChange)
  })
+}
+
+export function useTheme() {
+ function toggleTheme() {
+  theme.value = theme.value === 'dark' ? 'light' : 'dark'
+ }
+
+ function setTheme(newTheme: Theme) {
+  theme.value = newTheme
+ }
 
  return {
   theme,

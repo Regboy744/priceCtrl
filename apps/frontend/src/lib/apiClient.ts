@@ -61,6 +61,11 @@ const DEFAULT_TIMEOUT = 30_000;
 interface ApiFetchOptions extends RequestInit {
   /** Request timeout in milliseconds. Defaults to 30 000ms. */
   timeout?: number;
+  /**
+   * Internal: marks a request as already retried after a 401. Prevents
+   * infinite loops if the refresh endpoint itself returns 401.
+   */
+  _retriedAfter401?: boolean;
 }
 
 /**
@@ -70,7 +75,7 @@ async function apiFetch<T>(
   endpoint: string,
   options: ApiFetchOptions = {}
 ): Promise<ApiResponse<T>> {
-  const { timeout = DEFAULT_TIMEOUT, ...fetchOptions } = options;
+  const { timeout = DEFAULT_TIMEOUT, _retriedAfter401, ...fetchOptions } = options;
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -88,18 +93,18 @@ async function apiFetch<T>(
       },
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
-      // Handle 401 Unauthorized - token might be expired
-      if (response.status === 401) {
-        // Try to refresh the session
+      // Handle 401 Unauthorized — refresh the token and retry ONCE. Without
+      // the retry the user sees an error even though the session is now valid.
+      if (response.status === 401 && !_retriedAfter401) {
         const { error: refreshError } = await supabase.auth.refreshSession();
-        if (refreshError) {
-          console.error('Session refresh failed:', refreshError);
+        if (!refreshError) {
+          return apiFetch<T>(endpoint, { ...options, _retriedAfter401: true });
         }
+        console.error('Session refresh failed:', refreshError);
       }
 
+      const data = await response.json().catch(() => ({}));
       return {
         success: false,
         error: {
@@ -110,6 +115,7 @@ async function apiFetch<T>(
       };
     }
 
+    const data = await response.json();
     return {
       success: true,
       data,
@@ -234,7 +240,7 @@ export async function postStream(
   endpoint: string,
   body: unknown,
   onEvent: (event: SseEvent) => void,
-  options: { signal?: AbortSignal } = {}
+  options: { signal?: AbortSignal; _retriedAfter401?: boolean } = {}
 ): Promise<{ success: boolean; error?: ApiError }> {
   try {
     const url = `${API_URL}${endpoint}`;
@@ -252,10 +258,13 @@ export async function postStream(
     });
 
     if (!response.ok) {
-      const text = await response.text().catch(() => '');
-      if (response.status === 401) {
-        await supabase.auth.refreshSession().catch(() => {});
+      if (response.status === 401 && !options._retriedAfter401) {
+        const { error: refreshError } = await supabase.auth.refreshSession();
+        if (!refreshError) {
+          return postStream(endpoint, body, onEvent, { ...options, _retriedAfter401: true });
+        }
       }
+      const text = await response.text().catch(() => '');
       return {
         success: false,
         error: {
