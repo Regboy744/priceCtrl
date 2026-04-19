@@ -90,20 +90,33 @@ export const env = {
     useUnitCost: getEnvVarAsBoolean('PRICE_COMPARE_USE_UNIT_COST', true),
   },
 
-  // Proxy (Decodo Residential Proxy)
+  // Proxy — two separate Decodo pools, selected per-supplier in proxy.config.ts.
+  //  - residential: rotating IPs, metered bandwidth, session-aware (Decodo "Residential")
+  //  - isp:         fixed IPs, unlimited bandwidth, plain userpass (Decodo "ISP/Static")
   proxy: {
-    enabled: getEnvVarAsBoolean('DECODO_PROXY_ENABLED', false),
-    mode: getEnvVar('DECODO_PROXY_MODE', 'ip_whitelist'),
-    host: getEnvVar('DECODO_PROXY_HOST', 'gate.decodo.com'),
-    port: getEnvVarAsNumber('DECODO_PROXY_PORT', 7000),
-    username: getEnvVar('DECODO_PROXY_USERNAME', ''),
-    password: getEnvVar('DECODO_PROXY_PASSWORD', ''),
-    protocol: getEnvVar('DECODO_PROXY_PROTOCOL', 'http'),
-    country: getEnvVar('DECODO_PROXY_COUNTRY', ''),
-    sessionStrategy: getEnvVar('DECODO_PROXY_SESSION_STRATEGY', 'sticky'),
-    sessionDurationMin: getEnvVarAsNumber('DECODO_PROXY_SESSION_DURATION_MIN', 30),
-    sessionIdStrategy: getEnvVar('DECODO_PROXY_SESSION_ID_STRATEGY', 'per_job'),
-    timeoutMs: getEnvVarAsNumber('DECODO_PROXY_TIMEOUT_MS', 30000),
+    residential: {
+      enabled: getEnvVarAsBoolean('DECODO_PROXY_ENABLED', false),
+      mode: getEnvVar('DECODO_PROXY_MODE', 'ip_whitelist'),
+      host: getEnvVar('DECODO_PROXY_HOST', 'gate.decodo.com'),
+      port: getEnvVarAsNumber('DECODO_PROXY_PORT', 7000),
+      username: getEnvVar('DECODO_PROXY_USERNAME', ''),
+      password: getEnvVar('DECODO_PROXY_PASSWORD', ''),
+      protocol: getEnvVar('DECODO_PROXY_PROTOCOL', 'http'),
+      country: getEnvVar('DECODO_PROXY_COUNTRY', ''),
+      sessionStrategy: getEnvVar('DECODO_PROXY_SESSION_STRATEGY', 'sticky'),
+      sessionDurationMin: getEnvVarAsNumber('DECODO_PROXY_SESSION_DURATION_MIN', 30),
+      sessionIdStrategy: getEnvVar('DECODO_PROXY_SESSION_ID_STRATEGY', 'per_job'),
+      timeoutMs: getEnvVarAsNumber('DECODO_PROXY_TIMEOUT_MS', 30000),
+    },
+    isp: {
+      enabled: getEnvVarAsBoolean('DECODO_ISP_PROXY_ENABLED', false),
+      host: getEnvVar('DECODO_ISP_PROXY_HOST', 'isp.decodo.com'),
+      port: getEnvVarAsNumber('DECODO_ISP_PROXY_PORT', 10001),
+      username: getEnvVar('DECODO_ISP_PROXY_USERNAME', ''),
+      password: getEnvVar('DECODO_ISP_PROXY_PASSWORD', ''),
+      protocol: getEnvVar('DECODO_ISP_PROXY_PROTOCOL', 'http'),
+      timeoutMs: getEnvVarAsNumber('DECODO_ISP_PROXY_TIMEOUT_MS', 30000),
+    },
   },
 } as const;
 

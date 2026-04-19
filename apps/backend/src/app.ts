@@ -1,3 +1,4 @@
+import compression from 'compression';
 import cors from 'cors';
 import express, { type Application } from 'express';
 import helmet from 'helmet';
@@ -43,6 +44,7 @@ export function createApp(): Application {
   // `/health/*` still return HTML-ish fallbacks and a belt-and-braces CSP
   // costs nothing.
   app.use(helmet());
+  app.use(compression());
   app.use(globalLimiter);
 
   // CORS configuration. Production origins come from ALLOWED_ORIGINS

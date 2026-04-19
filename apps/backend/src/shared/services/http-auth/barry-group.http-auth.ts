@@ -34,12 +34,20 @@ const HTML_ACCEPT_HEADERS = {
   'accept-language': 'en-US,en;q=0.9',
 };
 
-export async function loginBarryGroup(credentials: SupplierCredentials): Promise<HttpAuthSession> {
+const SUPPLIER_KEY = 'Barry Group';
+
+export async function loginBarryGroup(
+  credentials: SupplierCredentials,
+  options?: { jobId?: string }
+): Promise<HttpAuthSession> {
   log.info('Logging in via HTTP POST');
+  const { jobId } = options ?? {};
 
   const loginPageRes = await curlService.fetch(LOGIN_URL, {
     captureHeaders: true,
     headers: HTML_ACCEPT_HEADERS,
+    supplierKey: SUPPLIER_KEY,
+    jobId,
   });
 
   if (loginPageRes.statusCode !== 200) {
@@ -61,6 +69,8 @@ export async function loginBarryGroup(credentials: SupplierCredentials): Promise
       'content-type': 'application/x-www-form-urlencoded',
       referer: LOGIN_URL,
     },
+    supplierKey: SUPPLIER_KEY,
+    jobId,
   });
 
   // 302 → /default.asp = success; 302 → /default.asp?invalid=1 = bad creds
@@ -89,6 +99,8 @@ export async function loginBarryGroup(credentials: SupplierCredentials): Promise
         ...HTML_ACCEPT_HEADERS,
         referer: LOGIN_URL,
       },
+      supplierKey: SUPPLIER_KEY,
+      jobId,
     });
     cookies = mergeCookies(cookies, extractCookieString(res.setCookies ?? []));
   }

@@ -1,18 +1,23 @@
 /**
- * Proxy Service — the single source of truth for proxy credentials,
- * session management, testing, and retry logic.
+ * Proxy Service — credentials, session management, testing, retry.
  *
- * Callers (BrowserService, health checks, smoke tests) ask this service
- * for ProxyCredentials.  Supplier scrapers never touch this directly;
- * they go through BrowserService / BaseScraper which call here internally.
+ * Two pools are available and selected per-call:
+ *   - residential: session-encoded username (sticky/rotate) via DECODO_PROXY_*
+ *   - isp:         plain userpass, fixed IPs                 via DECODO_ISP_PROXY_*
+ *
+ * Supplier scrapers never touch this directly — they go through BrowserService,
+ * CurlService, or BaseScraper, which internally resolve the right pool based on
+ * the supplier's policy in proxy.config.ts.
  */
 
 import { randomUUID } from 'node:crypto';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import { createLogger } from '../logger.service.js';
 import {
+  ispConfig,
   maskString,
-  proxyConfig,
+  residentialConfig,
+  resolveSupplierPool,
   safeCredentialsSummary,
   supplierProxyPolicies,
 } from './proxy.config.js';
@@ -20,23 +25,17 @@ import type {
   ProxyCredentials,
   ProxyOptions,
   ProxyPolicy,
+  ProxyPool,
   ProxyRetryOptions,
   ProxyTestResult,
 } from './proxy.types.js';
 
 const log = createLogger('ProxyService');
 
-// ============ Session ID Management ============
+// ============ Session ID Management (residential only) ============
 
-/**
- * Internal store of session IDs keyed by scope identifier.
- * Allows sticky sessions to persist across calls within the same scope.
- */
 const sessionIdStore = new Map<string, string>();
 
-/**
- * Derive a cache key for the session ID based on strategy + context.
- */
 function sessionCacheKey(
   strategy: 'per_job' | 'per_supplier' | 'per_browser',
   supplierKey?: string,
@@ -52,9 +51,6 @@ function sessionCacheKey(
   }
 }
 
-/**
- * Get or create a session ID for the given scope.
- */
 function getOrCreateSessionId(cacheKey: string): string {
   let id = sessionIdStore.get(cacheKey);
   if (!id) {
@@ -64,9 +60,6 @@ function getOrCreateSessionId(cacheKey: string): string {
   return id;
 }
 
-/**
- * Force-rotate a session ID for the given scope (used on repeated failures).
- */
 function rotateSessionId(cacheKey: string): string {
   const newId = randomUUID().replace(/-/g, '').slice(0, 16);
   sessionIdStore.set(cacheKey, newId);
@@ -86,88 +79,115 @@ function getOrCreateAgent(proxyUrl: string): HttpsProxyAgent<string> {
   return agent;
 }
 
+// ============ Credentials builders (per pool) ============
+
+function buildResidentialCredentials(options?: ProxyOptions): ProxyCredentials {
+  const cfg = residentialConfig;
+  const serverArg = `${cfg.host}:${cfg.port}`;
+
+  if (cfg.mode === 'ip_whitelist') {
+    return {
+      pool: 'residential',
+      serverArg,
+      url: `${cfg.protocol}://${cfg.host}:${cfg.port}`,
+      requiresAuth: false,
+    };
+  }
+
+  const sticky = options?.sticky ?? cfg.sessionStrategy === 'sticky';
+  const durationMin = options?.sessionDurationMin ?? cfg.sessionDurationMin;
+  const country = options?.country ?? cfg.country;
+
+  let enrichedUser = cfg.username;
+
+  if (sticky && durationMin > 0) {
+    enrichedUser += `-sessionduration-${durationMin}`;
+  }
+  if (sticky) {
+    const idStrategy = options?.sessionIdStrategy ?? cfg.sessionIdStrategy;
+    const sessionId =
+      options?.sessionId ??
+      getOrCreateSessionId(
+        sessionCacheKey(idStrategy, options?.supplierKey, options?.jobId)
+      );
+    enrichedUser += `-session-${sessionId}`;
+  }
+  if (country) {
+    enrichedUser += `-country-${country}`;
+  }
+
+  const encodedPassword = encodeURIComponent(cfg.password);
+  const encodedUser = encodeURIComponent(enrichedUser);
+  const url = `${cfg.protocol}://${encodedUser}:${encodedPassword}@${cfg.host}:${cfg.port}`;
+
+  return {
+    pool: 'residential',
+    serverArg,
+    url,
+    username: enrichedUser,
+    password: cfg.password,
+    requiresAuth: true,
+  };
+}
+
+function buildIspCredentials(): ProxyCredentials {
+  const cfg = ispConfig;
+  const serverArg = `${cfg.host}:${cfg.port}`;
+  const encodedPassword = encodeURIComponent(cfg.password);
+  const encodedUser = encodeURIComponent(cfg.username);
+  const url = `${cfg.protocol}://${encodedUser}:${encodedPassword}@${cfg.host}:${cfg.port}`;
+
+  return {
+    pool: 'isp',
+    serverArg,
+    url,
+    username: cfg.username,
+    password: cfg.password,
+    requiresAuth: true,
+  };
+}
+
 // ============ Proxy Service ============
 
 class ProxyService {
   /**
-   * Build proxy credentials from options + global config.
-   *
-   * In `userpass` mode the Decodo-style username encodes session
-   * parameters:
-   *   user-<BASE_USER>-sessionduration-<MIN>-session-<ID>-country-<CC>
-   *
-   * In `ip_whitelist` mode no credentials are needed — the proxy
-   * authenticates by the caller's IP.
+   * Build credentials for the requested pool.
+   * Pool resolution order: explicit options.pool > supplier policy > 'residential'.
    */
   buildCredentials(options?: ProxyOptions): ProxyCredentials {
-    const cfg = proxyConfig;
+    const pool: ProxyPool =
+      options?.pool ?? resolveSupplierPool(options?.supplierKey);
 
-    if (!cfg.enabled) {
-      throw new Error('[ProxyService] Cannot build credentials — proxy is disabled.');
+    if (pool === 'isp') {
+      if (!ispConfig.enabled) {
+        throw new Error('[ProxyService] ISP pool requested but disabled.');
+      }
+      return buildIspCredentials();
     }
 
-    const serverArg = `${cfg.host}:${cfg.port}`;
-
-    if (cfg.mode === 'ip_whitelist') {
-      return {
-        serverArg,
-        url: `${cfg.protocol}://${cfg.host}:${cfg.port}`,
-        requiresAuth: false,
-      };
+    if (!residentialConfig.enabled) {
+      throw new Error('[ProxyService] Residential pool requested but disabled.');
     }
-
-    // ---- userpass mode: build enriched username ----
-    const sticky = options?.sticky ?? cfg.sessionStrategy === 'sticky';
-    const durationMin = options?.sessionDurationMin ?? cfg.sessionDurationMin;
-    const country = options?.country ?? cfg.country;
-
-    // Build the enriched username with Decodo param encoding.
-    // Base format: user-<BASE_USER>
-    // Append optional params: -sessionduration-N -session-ID -country-CC
-    let enrichedUser = cfg.username;
-
-    if (sticky && durationMin > 0) {
-      enrichedUser += `-sessionduration-${durationMin}`;
-    }
-
-    if (sticky) {
-      const sessionId =
-        options?.sessionId ??
-        getOrCreateSessionId(
-          sessionCacheKey(cfg.sessionIdStrategy, options?.supplierKey, options?.jobId)
-        );
-      enrichedUser += `-session-${sessionId}`;
-    }
-
-    if (country) {
-      enrichedUser += `-country-${country}`;
-    }
-
-    // Encode password for URL (handles special chars like = / @).
-    const encodedPassword = encodeURIComponent(cfg.password);
-    const encodedUser = encodeURIComponent(enrichedUser);
-
-    const url = `${cfg.protocol}://${encodedUser}:${encodedPassword}@${cfg.host}:${cfg.port}`;
-
-    return {
-      serverArg,
-      url,
-      username: enrichedUser,
-      password: cfg.password,
-      requiresAuth: true,
-    };
+    return buildResidentialCredentials(options);
   }
 
   /**
-   * Build credentials using the supplier's policy from the central map.
-   * Falls back to global defaults if the supplier has no explicit policy.
+   * Resolve credentials for a supplier using the central policy map.
+   * Returns null when the resolved pool is disabled — so callers can gracefully
+   * fall through to direct (unproxied) requests instead of throwing.
    */
-  buildCredentialsForSupplier(supplierKey: string, jobId?: string): ProxyCredentials {
+  buildCredentialsForSupplier(supplierKey: string, jobId?: string): ProxyCredentials | null {
     const policy: ProxyPolicy | undefined = supplierProxyPolicies[supplierKey];
+    const pool: ProxyPool = policy?.pool ?? 'residential';
+
+    if (pool === 'isp' && !ispConfig.enabled) return null;
+    if (pool === 'residential' && !residentialConfig.enabled) return null;
 
     return this.buildCredentials({
+      pool,
       sticky: policy?.sessionStrategy === 'sticky',
       sessionDurationMin: policy?.sessionDurationMin,
+      sessionIdStrategy: policy?.sessionIdStrategy,
       country: policy?.country,
       supplierKey,
       jobId,
@@ -176,24 +196,27 @@ class ProxyService {
 
   /**
    * Test proxy connectivity by hitting https://ip.decodo.com/json.
-   * Returns the detected IP, country, and latency.
    */
   async testConnection(options?: ProxyOptions): Promise<ProxyTestResult> {
-    const cfg = proxyConfig;
+    const pool: ProxyPool =
+      options?.pool ?? resolveSupplierPool(options?.supplierKey);
     const startMs = Date.now();
 
-    if (!cfg.enabled) {
-      return { ok: false, error: 'Proxy is disabled', latencyMs: 0 };
+    const poolEnabled = pool === 'isp' ? ispConfig.enabled : residentialConfig.enabled;
+    if (!poolEnabled) {
+      return { ok: false, error: `Pool "${pool}" is disabled`, latencyMs: 0 };
     }
 
+    const timeoutMs = pool === 'isp' ? ispConfig.timeoutMs : residentialConfig.timeoutMs;
+
     try {
-      const creds = options ? this.buildCredentials(options) : this.buildCredentials();
+      const creds = this.buildCredentials(options);
       const agent = getOrCreateAgent(creds.url);
 
       const response = await fetch('https://ip.decodo.com/json', {
         // @ts-expect-error -- Node fetch supports agent via dispatcher, https-proxy-agent works here
         agent,
-        signal: AbortSignal.timeout(cfg.timeoutMs),
+        signal: AbortSignal.timeout(timeoutMs),
       });
 
       if (!response.ok) {
@@ -205,7 +228,6 @@ class ProxyService {
       }
 
       const data = (await response.json()) as Record<string, unknown>;
-
       const result: ProxyTestResult = {
         ok: true,
         ip: (data.ip as string) ?? (data.query as string) ?? undefined,
@@ -216,25 +238,21 @@ class ProxyService {
       };
 
       log.debug(
-        { ip: result.ip, country: result.country, city: result.city, latencyMs: result.latencyMs },
+        { pool, ip: result.ip, country: result.country, latencyMs: result.latencyMs },
         'Proxy test OK'
       );
-
       return result;
     } catch (err) {
       const error = err as Error;
       const latency = Date.now() - startMs;
-      log.error({ err: error, latencyMs: latency }, 'Proxy test FAILED');
+      log.error({ pool, err: error, latencyMs: latency }, 'Proxy test FAILED');
       return { ok: false, error: error.message, latencyMs: latency };
     }
   }
 
   /**
-   * Generic retry wrapper that handles proxy-specific failures.
-   *
-   * On 407 / ECONNRESET / ETIMEDOUT it retries with exponential backoff.
-   * When `rotateSessionOnFailure` is true and using sticky sessions,
-   * the session ID is rotated after half the retries have been exhausted.
+   * Retry wrapper with exponential backoff. Session rotation only applies
+   * to residential sticky sessions; ignored on ISP pool.
    */
   async withRetry<T>(fn: () => Promise<T>, options?: ProxyRetryOptions): Promise<T> {
     const maxRetries = options?.maxRetries ?? 3;
@@ -260,14 +278,15 @@ class ProxyService {
           break;
         }
 
-        // Rotate session mid-way through retries if configured.
+        const pool: ProxyPool = resolveSupplierPool(options?.supplierKey);
         if (
           options?.rotateSessionOnFailure &&
+          pool === 'residential' &&
           attempt >= Math.ceil(maxRetries / 2) &&
           options.supplierKey
         ) {
           const key = sessionCacheKey(
-            proxyConfig.sessionIdStrategy,
+            residentialConfig.sessionIdStrategy,
             options.supplierKey,
             options.jobId
           );
@@ -275,7 +294,6 @@ class ProxyService {
           log.debug({ scope: logPrefix, newSessionId: newId }, 'Rotated session ID');
         }
 
-        // Exponential backoff with jitter.
         const delay = Math.min(baseDelay * 2 ** (attempt - 1), maxDelay);
         const jitter = Math.floor(Math.random() * delay * 0.3);
         await new Promise((resolve) => setTimeout(resolve, delay + jitter));
@@ -285,81 +303,63 @@ class ProxyService {
     throw lastError ?? new Error('Retry failed with no error captured');
   }
 
-  /**
-   * Get an HttpsProxyAgent for Node-level HTTP requests (cached).
-   */
+  /** Get an HttpsProxyAgent for Node-level HTTP requests (cached). */
   getHttpAgent(options?: ProxyOptions): HttpsProxyAgent<string> {
-    if (!proxyConfig.enabled) {
-      throw new Error('[ProxyService] Cannot create HTTP agent — proxy is disabled.');
-    }
-    const creds = options ? this.buildCredentials(options) : this.buildCredentials();
+    const creds = this.buildCredentials(options);
     return getOrCreateAgent(creds.url);
   }
 
-  /**
-   * Whether the proxy is currently enabled.
-   */
+  /** True when either pool is enabled. */
   get isEnabled(): boolean {
-    return proxyConfig.enabled;
+    return residentialConfig.enabled || ispConfig.enabled;
   }
 
-  /**
-   * Clear all cached session IDs (useful for testing).
-   */
   clearSessions(): void {
     sessionIdStore.clear();
   }
 
-  /**
-   * Clear agent cache (useful for testing / credential rotation).
-   */
   clearAgentCache(): void {
     agentCache.clear();
   }
 
-  /**
-   * Log-safe summary of the current config (no secrets).
-   */
+  /** Log-safe summary of both pools (no secrets). */
   getConfigSummary(): Record<string, unknown> {
-    const cfg = proxyConfig;
     return {
-      enabled: cfg.enabled,
-      mode: cfg.mode,
-      endpoint: safeCredentialsSummary(
-        cfg.host,
-        cfg.port,
-        cfg.mode === 'userpass' ? cfg.username : undefined
-      ),
-      sessionStrategy: cfg.sessionStrategy,
-      sessionIdStrategy: cfg.sessionIdStrategy,
-      sessionDurationMin: cfg.sessionDurationMin,
-      country: cfg.country ?? 'any',
+      residential: residentialConfig.enabled
+        ? {
+            enabled: true,
+            mode: residentialConfig.mode,
+            endpoint: safeCredentialsSummary(
+              residentialConfig.host,
+              residentialConfig.port,
+              residentialConfig.mode === 'userpass' ? residentialConfig.username : undefined
+            ),
+            sessionStrategy: residentialConfig.sessionStrategy,
+            sessionIdStrategy: residentialConfig.sessionIdStrategy,
+            sessionDurationMin: residentialConfig.sessionDurationMin,
+            country: residentialConfig.country ?? 'any',
+          }
+        : { enabled: false },
+      isp: ispConfig.enabled
+        ? {
+            enabled: true,
+            endpoint: safeCredentialsSummary(ispConfig.host, ispConfig.port, ispConfig.username),
+          }
+        : { enabled: false },
     };
   }
 
-  // ============ Private Helpers ============
-
-  /**
-   * Determine whether an error is likely a transient proxy issue
-   * that warrants a retry.
-   */
   private isRetryableError(error: Error): boolean {
     const msg = error.message.toLowerCase();
-
-    // HTTP 407 Proxy Authentication Required
     if (msg.includes('407')) return true;
-
-    // Connection-level errors
     if (msg.includes('econnreset')) return true;
     if (msg.includes('econnrefused')) return true;
     if (msg.includes('etimedout')) return true;
     if (msg.includes('timeout')) return true;
     if (msg.includes('socket hang up')) return true;
     if (msg.includes('network')) return true;
-
     return false;
   }
 }
 
-// Singleton
 export const proxyService = new ProxyService();

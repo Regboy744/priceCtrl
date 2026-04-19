@@ -33,6 +33,7 @@
     "@pricectrl/contracts": "workspace:*",
     "@supabase/supabase-js": "^2.49.0",
     "cheerio": "^1.2.0",
+    "compression": "^1.8.1",
     "cors": "^2.8.5",
     "express": "^4.21.0",
     "express-rate-limit": "^8.3.2",
@@ -53,6 +54,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.0",
+    "@types/compression": "^1.8.1",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/morgan": "^1.9.9",

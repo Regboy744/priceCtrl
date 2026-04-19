@@ -76,6 +76,10 @@ export class SavageWhittenScraper extends BaseScraper {
     this.sessionCookies = session.cookies;
   }
 
+  private curlOpts(extra?: Parameters<typeof curlService.fetch>[1]) {
+    return { ...extra, supplierKey: this.supplierName };
+  }
+
   async scrapeProducts(onBatchReady?: ProductBatchSaveCallback): Promise<StreamingScrapeStats> {
     if (!this.sessionCookies) {
       throw new Error('No session cookies. Call login() first.');
@@ -141,13 +145,16 @@ export class SavageWhittenScraper extends BaseScraper {
 
     // Fetch first page to get total pages
     const firstUrl = `${CONFIG.baseUrl}/ambient-products/${categoryId}/?pagesize=${CONFIG.pageSize}&page=1`;
-    const firstRes = await curlService.fetch(firstUrl, {
-      cookies: this.sessionCookies,
-      headers: {
-        accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'accept-language': 'en-US,en;q=0.9',
-      },
-    });
+    const firstRes = await curlService.fetch(
+      firstUrl,
+      this.curlOpts({
+        cookies: this.sessionCookies,
+        headers: {
+          accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          'accept-language': 'en-US,en;q=0.9',
+        },
+      })
+    );
 
     if (firstRes.statusCode !== 200) {
       this.log.warn({ categoryId, status: firstRes.statusCode }, 'Non-200 response');
@@ -168,13 +175,16 @@ export class SavageWhittenScraper extends BaseScraper {
     for (let page = 2; page <= totalPages; page++) {
       const url = `${CONFIG.baseUrl}/ambient-products/${categoryId}/?pagesize=${CONFIG.pageSize}&page=${page}`;
 
-      const response = await curlService.fetch(url, {
-        cookies: this.sessionCookies,
-        headers: {
-          accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-          'accept-language': 'en-US,en;q=0.9',
-        },
-      });
+      const response = await curlService.fetch(
+        url,
+        this.curlOpts({
+          cookies: this.sessionCookies,
+          headers: {
+            accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'accept-language': 'en-US,en;q=0.9',
+          },
+        })
+      );
 
       if (response.statusCode !== 200) break;
 
@@ -312,7 +322,7 @@ export class SavageWhittenScraper extends BaseScraper {
    */
   async healthCheck(): Promise<boolean> {
     try {
-      const res = await curlService.fetch(CONFIG.baseUrl);
+      const res = await curlService.fetch(CONFIG.baseUrl, this.curlOpts());
       return res.statusCode === 200;
     } catch {
       return false;

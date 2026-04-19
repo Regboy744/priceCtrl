@@ -3,12 +3,14 @@ import { createUserClient } from '../../shared/database/supabase.js';
 import { BadRequestError } from '../../shared/errors/AppError.js';
 import { throwIfSupabaseError } from '../../shared/errors/supabaseError.js';
 import { authMiddleware } from '../../shared/middleware/auth.middleware.js';
+import { cacheResponse } from '../../shared/middleware/cache.middleware.js';
 import { asyncHandler } from '../../shared/middleware/error.middleware.js';
 import { requirePermission } from '../../shared/middleware/requirePermission.js';
 
 const router = Router();
 
 router.use(authMiddleware);
+router.use(cacheResponse(60_000));
 
 const COMPANY_WITH_BRAND = `
   *,

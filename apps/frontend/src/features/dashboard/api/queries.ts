@@ -98,8 +98,9 @@ export const dashboardOrderItemsQuery = async (orderIds: string[]) => {
  if (orderIds.length === 0) {
   return toQueryResult({ success: true, data: [] as DashboardOrderItem[] })
  }
- const res = await apiClient.get<DashboardOrderItem[]>(
-  `/orders/items-for-dashboard?orderIds=${encodeURIComponent(orderIds.join(','))}`,
+ const res = await apiClient.post<DashboardOrderItem[]>(
+  '/orders/items-for-dashboard',
+  { orderIds },
  )
  return toQueryResult(res)
 }
@@ -128,13 +129,10 @@ export const dashboardSavingsCalculationsQuery = async (
  if (orderIds.length === 0) {
   return toQueryResult({ success: true, data: [] as SavingsRow[] })
  }
- const params = new URLSearchParams()
- params.set('companyId', companyId)
- params.set('orderIds', orderIds.join(','))
-
- const res = await apiClient.get<SavingsRow[]>(
-  `/orders/savings?${params.toString()}`,
- )
+ const res = await apiClient.post<SavingsRow[]>('/orders/savings', {
+  orderIds,
+  companyId,
+ })
  return toQueryResult(res)
 }
 

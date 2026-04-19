@@ -43,12 +43,9 @@ async function main(): Promise<void> {
     );
   });
 
-  // IMPORTANT: Orders do NOT use Puppeteer. Order submission runs through
-  // `BaseHttpOrderHandler` which authenticates + posts cart items via
-  // `curl_chrome131` (curl-impersonate) — purely HTTP. Puppeteer is only used
-  // on the scraping path (supplier login + product discovery).
-  // The long timeout below exists because a full basket submission can still
-  // take 2–3 minutes end-to-end across multiple supplier HTTP calls.
+  // Long timeout for order submission: a full basket can take 2–3 minutes
+  // end-to-end across multiple supplier HTTP calls (`BaseHttpOrderHandler`
+  // via `curl_chrome131`).
   server.timeout = 200_000; // 200s - max time for a single request
   server.keepAliveTimeout = 200_000; // 200s - keep-alive connections
   server.headersTimeout = 205_000; // Must be > keepAliveTimeout

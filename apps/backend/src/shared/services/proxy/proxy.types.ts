@@ -8,6 +8,9 @@
 
 // ============ Configuration Types ============
 
+/** Which Decodo pool a supplier should route through. */
+export type ProxyPool = 'residential' | 'isp';
+
 /** Authentication mode for the proxy. */
 export type ProxyMode = 'ip_whitelist' | 'userpass';
 
@@ -18,10 +21,10 @@ export type ProxySessionStrategy = 'rotate' | 'sticky';
 export type ProxySessionIdStrategy = 'per_job' | 'per_supplier' | 'per_browser';
 
 /**
- * Full proxy configuration derived from environment variables.
- * Immutable after startup validation.
+ * Residential pool config (Decodo rotating IPs, metered, session-aware).
+ * Supports sticky sessions via enriched username parameters.
  */
-export interface ProxyConfig {
+export interface ResidentialProxyConfig {
   readonly enabled: boolean;
   readonly mode: ProxyMode;
   readonly host: string;
@@ -36,16 +39,34 @@ export interface ProxyConfig {
   readonly timeoutMs: number;
 }
 
+/**
+ * ISP/Static pool config (Decodo fixed IPs, unlimited bandwidth).
+ * Plain userpass — no session encoding; IP is already stable.
+ */
+export interface IspProxyConfig {
+  readonly enabled: boolean;
+  readonly host: string;
+  readonly port: number;
+  readonly username: string;
+  readonly password: string;
+  readonly protocol: 'http' | 'https';
+  readonly timeoutMs: number;
+}
+
 // ============ Per-Supplier Policy ============
 
 /**
  * Per-supplier proxy behaviour override.
  * Stored in a central map so scrapers stay proxy-agnostic.
+ *
+ * `pool` selects which Decodo product to use. Session fields only apply
+ * when `pool === 'residential'` — ISP IPs are already static.
  */
 export interface ProxyPolicy {
-  readonly sessionStrategy: ProxySessionStrategy;
-  readonly sessionDurationMin: number;
-  readonly sessionIdStrategy: ProxySessionIdStrategy;
+  readonly pool: ProxyPool;
+  readonly sessionStrategy?: ProxySessionStrategy;
+  readonly sessionDurationMin?: number;
+  readonly sessionIdStrategy?: ProxySessionIdStrategy;
   readonly country?: string;
 }
 
@@ -57,10 +78,14 @@ export interface ProxyPolicy {
  * defaults come from ProxyConfig + ProxyPolicy.
  */
 export interface ProxyOptions {
+  /** Explicit pool override; otherwise derived from supplier policy / default residential. */
+  pool?: ProxyPool;
   country?: string;
   sessionId?: string;
   sessionDurationMin?: number;
   sticky?: boolean;
+  /** Override the session-id scope (default: residential config value). */
+  sessionIdStrategy?: ProxySessionIdStrategy;
   supplierKey?: string;
   jobId?: string;
 }
@@ -72,9 +97,11 @@ export interface ProxyOptions {
  * `serverArg` is safe to log; `password` must NEVER be logged.
  */
 export interface ProxyCredentials {
+  /** Which pool issued these credentials. */
+  pool: ProxyPool;
   /** `host:port` for Chromium `--proxy-server` launch arg. */
   serverArg: string;
-  /** Full proxy URL (may contain auth) for HTTP agents. */
+  /** Full proxy URL (may contain auth) for HTTP agents + curl `-x`. */
   url: string;
   /** Username with encoded session params — for `page.authenticate()`. */
   username?: string;

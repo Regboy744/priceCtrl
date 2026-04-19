@@ -109,6 +109,10 @@ export class BarryGroupScraper extends BaseScraper {
     this.sessionCookies = session.cookies;
   }
 
+  private curlOpts(extra?: Parameters<typeof curlService.fetch>[1]) {
+    return { ...extra, supplierKey: this.supplierName };
+  }
+
   async scrapeProducts(onBatchReady?: ProductBatchSaveCallback): Promise<StreamingScrapeStats> {
     if (!this.sessionCookies) {
       throw new Error('No session cookies. Call login() first.');
@@ -137,9 +141,10 @@ export class BarryGroupScraper extends BaseScraper {
         // parallel heavy gridlist.asp calls — causes curl code 28 / HTTP 000
         // from Cloudflare.
         if (phase.setupUrl) {
-          await curlService.fetch(`${CONFIG.baseUrl}${phase.setupUrl}`, {
-            cookies: this.sessionCookies,
-          });
+          await curlService.fetch(
+            `${CONFIG.baseUrl}${phase.setupUrl}`,
+            this.curlOpts({ cookies: this.sessionCookies })
+          );
           await new Promise((r) => setTimeout(r, 1000));
         }
 
@@ -196,13 +201,16 @@ export class BarryGroupScraper extends BaseScraper {
 
     // Fetch first page to determine total pages
     const firstUrl = `${CONFIG.baseUrl}/products/gridlist.asp?department=${department}&prodgroup=${prodgroup}&ItemPP=${CONFIG.pageSize}&page=1`;
-    const firstRes = await curlService.fetch(firstUrl, {
-      cookies: this.sessionCookies,
-      headers: {
-        accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'accept-language': 'en-US,en;q=0.9',
-      },
-    });
+    const firstRes = await curlService.fetch(
+      firstUrl,
+      this.curlOpts({
+        cookies: this.sessionCookies,
+        headers: {
+          accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          'accept-language': 'en-US,en;q=0.9',
+        },
+      })
+    );
 
     if (firstRes.statusCode !== 200) return products;
 
@@ -221,13 +229,16 @@ export class BarryGroupScraper extends BaseScraper {
     for (let page = 2; page <= totalPages; page++) {
       const url = `${CONFIG.baseUrl}/products/gridlist.asp?department=${department}&prodgroup=${prodgroup}&ItemPP=${CONFIG.pageSize}&page=${page}`;
 
-      const response = await curlService.fetch(url, {
-        cookies: this.sessionCookies,
-        headers: {
-          accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-          'accept-language': 'en-US,en;q=0.9',
-        },
-      });
+      const response = await curlService.fetch(
+        url,
+        this.curlOpts({
+          cookies: this.sessionCookies,
+          headers: {
+            accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'accept-language': 'en-US,en;q=0.9',
+          },
+        })
+      );
 
       if (response.statusCode !== 200) break;
 
@@ -287,13 +298,16 @@ export class BarryGroupScraper extends BaseScraper {
     const url = `${CONFIG.baseUrl}/products/details.asp?product_code=${encodeURIComponent(productCode)}`;
 
     try {
-      const res = await curlService.fetch(url, {
-        cookies: this.sessionCookies,
-        headers: {
-          accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-          'accept-language': 'en-US,en;q=0.9',
-        },
-      });
+      const res = await curlService.fetch(
+        url,
+        this.curlOpts({
+          cookies: this.sessionCookies,
+          headers: {
+            accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'accept-language': 'en-US,en;q=0.9',
+          },
+        })
+      );
       if (res.statusCode !== 200) return null;
 
       const $ = cheerio.load(res.body);
@@ -418,7 +432,7 @@ export class BarryGroupScraper extends BaseScraper {
    */
   async healthCheck(): Promise<boolean> {
     try {
-      const res = await curlService.fetch(CONFIG.baseUrl);
+      const res = await curlService.fetch(CONFIG.baseUrl, this.curlOpts());
       return res.statusCode === 200;
     } catch {
       return false;

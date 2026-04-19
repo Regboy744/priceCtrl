@@ -4,26 +4,31 @@
  * Import from here — never import internal files directly.
  *
  * Usage examples:
- *   import { proxyService, proxyConfig } from '../../shared/services/proxy/index.js';
+ *   import { proxyService, residentialConfig, ispConfig } from '../../shared/services/proxy/index.js';
  */
 
 // Types (re-exported for consumers)
 export type {
-  ProxyConfig,
+  IspProxyConfig,
   ProxyCredentials,
   ProxyMode,
   ProxyOptions,
   ProxyPolicy,
+  ProxyPool,
   ProxyRetryOptions,
   ProxySessionIdStrategy,
   ProxySessionStrategy,
   ProxyTestResult,
+  ResidentialProxyConfig,
 } from './proxy.types.js';
 
-// Config singleton + utilities
+// Config singletons + utilities
 export {
+  anyProxyEnabled,
+  ispConfig,
   maskString,
-  proxyConfig,
+  residentialConfig,
+  resolveSupplierPool,
   safeCredentialsSummary,
   supplierProxyPolicies,
 } from './proxy.config.js';

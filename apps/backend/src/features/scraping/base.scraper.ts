@@ -4,7 +4,6 @@ import { LoginError, NavigationError } from '../../shared/errors/AppError.js';
 import type { BrowserOptions } from '../../shared/services/browser.service.js';
 import { type BrowserService, browserService } from '../../shared/services/browser.service.js';
 import { createLogger } from '../../shared/services/logger.service.js';
-import { proxyConfig } from '../../shared/services/proxy/proxy.config.js';
 import { proxyService } from '../../shared/services/proxy/proxy.service.js';
 import type { ProxyCredentials } from '../../shared/services/proxy/proxy.types.js';
 import type { SupplierCredentials } from '../../shared/services/vault.service.js';
@@ -83,10 +82,11 @@ export abstract class BaseScraper implements ISupplierScraper {
       return;
     }
 
-    // Resolve proxy credentials for this supplier (if proxy is enabled).
-    this.proxyCredentials = proxyConfig.enabled
-      ? proxyService.buildCredentialsForSupplier(this.supplierName)
-      : undefined;
+    // Resolve proxy credentials for this supplier. Returns null when the
+    // pool the supplier is configured to use is disabled — in that case the
+    // browser launches without a proxy (direct egress).
+    this.proxyCredentials =
+      proxyService.buildCredentialsForSupplier(this.supplierName) ?? undefined;
 
     const browserOpts: BrowserOptions = { proxyCredentials: this.proxyCredentials };
 

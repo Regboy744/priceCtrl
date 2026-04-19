@@ -1,0 +1,84 @@
+# Production compose file for the PriceCtrl VPS.
+# All services run from Docker Hub images — no building on the server.
+#
+# Server layout:
+#   ~/pricectrl/
+#     docker-compose.prod.yml   (this file)
+#     Caddyfile                 (copied from deploy/Caddyfile)
+#     backend.env               (real secrets)
+#     price-mgmt.env            (real secrets)
+#     outputs/                  (price-mgmt output dir, auto-created)
+#
+# Commands:
+#   docker compose -f docker-compose.prod.yml pull
+#   docker compose -f docker-compose.prod.yml up -d
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: pricectrl-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"   # HTTP/3
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+      - frontend
+    networks: [web]
+
+  frontend:
+    image: regboy/pricectrl-frontend:latest
+    container_name: pricectrl-frontend
+    restart: unless-stopped
+    networks: [web]
+
+  backend:
+    image: regboy/pricectrl-backend:latest
+    container_name: pricectrl-backend
+    restart: unless-stopped
+    env_file: ./backend.env
+    environment:
+      - NODE_ENV=production
+    networks: [web]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/health/live').then(r=>r.ok?process.exit(0):process.exit(1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  price-mgmt:
+    image: regboy/pricectrl-price-mgmt:latest
+    container_name: pricectrl-price-mgmt
+    restart: unless-stopped
+    env_file: ./price-mgmt.env
+    shm_size: "2gb"
+    environment:
+      - CHROME_PATH=/usr/bin/google-chrome-stable
+      - HEADLESS=true
+    volumes:
+      - ./outputs:/repo/apps/price-mgmt/outputs
+    networks: [web]
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+networks:
+  web:
+    driver: bridge

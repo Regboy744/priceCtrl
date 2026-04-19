@@ -157,9 +157,9 @@ export const orderItemsCountQuery = async (orderIds: string[]) => {
  if (orderIds.length === 0) {
   return toQueryResult({ success: true, data: [] as OrderIdRef[] })
  }
- const res = await apiClient.get<OrderIdRef[]>(
-  `/orders/items-count?orderIds=${encodeURIComponent(orderIds.join(','))}`,
- )
+ const res = await apiClient.post<OrderIdRef[]>('/orders/items-count', {
+  orderIds,
+ })
  return toQueryResult(res)
 }
 
@@ -174,9 +174,9 @@ export const orderItemsForStatsQuery = async (orderIds: string[]) => {
  if (orderIds.length === 0) {
   return toQueryResult({ success: true, data: [] as OrderItemStats[] })
  }
- const res = await apiClient.get<OrderItemStats[]>(
-  `/orders/items-for-stats?orderIds=${encodeURIComponent(orderIds.join(','))}`,
- )
+ const res = await apiClient.post<OrderItemStats[]>('/orders/items-for-stats', {
+  orderIds,
+ })
  return toQueryResult(res)
 }
 
@@ -204,13 +204,10 @@ export const orderSavingsCalculationsQuery = async (
  if (orderIds.length === 0) {
   return toQueryResult({ success: true, data: [] as SavingsRow[] })
  }
- const params = new URLSearchParams()
- params.set('orderIds', orderIds.join(','))
- if (companyId) params.set('companyId', companyId)
-
- const res = await apiClient.get<SavingsRow[]>(
-  `/orders/savings?${params.toString()}`,
- )
+ const res = await apiClient.post<SavingsRow[]>('/orders/savings', {
+  orderIds,
+  companyId: companyId ?? undefined,
+ })
  return toQueryResult(res)
 }
 

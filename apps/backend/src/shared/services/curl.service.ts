@@ -12,6 +12,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { env } from '../config/env.js';
 import { createLogger } from './logger.service.js';
+import { proxyService } from './proxy/index.js';
 
 const execFileAsync = promisify(execFile);
 const log = createLogger('CurlService');
@@ -39,6 +40,14 @@ interface CurlOptions {
    * When true, Set-Cookie headers are returned in the response.
    */
   captureHeaders?: boolean;
+  /**
+   * Supplier key for proxy routing. When set, resolves per-supplier proxy
+   * policy and appends `-x <proxyUrl>` so the request egresses through
+   * Decodo. Omit for direct requests.
+   */
+  supplierKey?: string;
+  /** Correlation ID used for per-job sticky sessions. */
+  jobId?: string;
 }
 
 interface CurlResponse {
@@ -90,6 +99,20 @@ class CurlService {
     if (options?.headers) {
       for (const [key, value] of Object.entries(options.headers)) {
         args.push('-H', `${key}: ${value}`);
+      }
+    }
+
+    if (options?.supplierKey) {
+      const creds = proxyService.buildCredentialsForSupplier(
+        options.supplierKey,
+        options.jobId
+      );
+      if (creds) {
+        args.push('-x', creds.url);
+        log.debug(
+          { supplierKey: options.supplierKey, pool: creds.pool, jobId: options.jobId },
+          'curl egress via proxy'
+        );
       }
     }
 

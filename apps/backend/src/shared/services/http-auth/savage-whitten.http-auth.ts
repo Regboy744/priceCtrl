@@ -21,10 +21,14 @@ const BASE_URL = 'https://www.savageandwhitten.com';
 const LOGIN_URL = `${BASE_URL}/login`;
 const LOGIN_ENDPOINT = `${BASE_URL}/umbraco/surface/UmbracoLogin/HandleLogin`;
 
+const SUPPLIER_KEY = 'Savage & Whitten';
+
 export async function loginSavageWhitten(
-  credentials: SupplierCredentials
+  credentials: SupplierCredentials,
+  options?: { jobId?: string }
 ): Promise<HttpAuthSession> {
   log.info('Logging in via HTTP POST');
+  const { jobId } = options ?? {};
 
   const loginPageRes = await curlService.fetch(LOGIN_URL, {
     captureHeaders: true,
@@ -32,6 +36,8 @@ export async function loginSavageWhitten(
       accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
       'accept-language': 'en-US,en;q=0.9',
     },
+    supplierKey: SUPPLIER_KEY,
+    jobId,
   });
 
   if (loginPageRes.statusCode !== 200) {
@@ -63,6 +69,8 @@ export async function loginSavageWhitten(
       'x-requested-with': 'XMLHttpRequest',
       referer: LOGIN_URL,
     },
+    supplierKey: SUPPLIER_KEY,
+    jobId,
   });
 
   const postCookies = extractCookieString(loginRes.setCookies ?? []);

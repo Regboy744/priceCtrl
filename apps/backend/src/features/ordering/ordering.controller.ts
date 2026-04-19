@@ -4,6 +4,7 @@ import { createUserClient } from '../../shared/database/supabase.js';
 import { BadRequestError, ForbiddenError } from '../../shared/errors/AppError.js';
 import { throwIfSupabaseError } from '../../shared/errors/supabaseError.js';
 import { authMiddleware } from '../../shared/middleware/auth.middleware.js';
+import { cacheResponse } from '../../shared/middleware/cache.middleware.js';
 import { asyncHandler } from '../../shared/middleware/error.middleware.js';
 import { requirePermission } from '../../shared/middleware/requirePermission.js';
 import { createLogger } from '../../shared/services/logger.service.js';
@@ -119,10 +120,10 @@ const SAVINGS_SELECT = `
   order_items!inner(order_id)
 `;
 
-const splitIds = (raw: unknown): string[] => {
-  if (typeof raw !== 'string' || !raw) return [];
+const parseOrderIds = (raw: unknown): string[] => {
+  if (!Array.isArray(raw)) return [];
   return raw
-    .split(',')
+    .filter((v): v is string => typeof v === 'string')
     .map((s) => s.trim())
     .filter(Boolean);
 };
@@ -132,6 +133,7 @@ const log = createLogger('OrderController');
 
 // All routes require authentication
 router.use(authMiddleware);
+router.use(cacheResponse(30_000));
 
 /**
  * POST /api/v1/orders/submit
@@ -272,13 +274,14 @@ router.get(
 );
 
 /**
- * GET /api/v1/orders/items-count?orderIds=a,b,c
+ * POST /api/v1/orders/items-count
+ * @body { orderIds: string[] }
  */
-router.get(
+router.post(
   '/items-count',
   requirePermission('order_items:read'),
   asyncHandler(async (req: Request, res: Response) => {
-    const orderIds = splitIds(req.query.orderIds);
+    const orderIds = parseOrderIds((req.body as { orderIds?: unknown })?.orderIds);
     if (orderIds.length === 0) {
       res.json([]);
       return;
@@ -294,13 +297,14 @@ router.get(
 );
 
 /**
- * GET /api/v1/orders/items-for-stats?orderIds=a,b,c
+ * POST /api/v1/orders/items-for-stats
+ * @body { orderIds: string[] }
  */
-router.get(
+router.post(
   '/items-for-stats',
   requirePermission('order_items:read'),
   asyncHandler(async (req: Request, res: Response) => {
-    const orderIds = splitIds(req.query.orderIds);
+    const orderIds = parseOrderIds((req.body as { orderIds?: unknown })?.orderIds);
     if (orderIds.length === 0) {
       res.json([]);
       return;
@@ -317,14 +321,15 @@ router.get(
 );
 
 /**
- * GET /api/v1/orders/items-for-dashboard?orderIds=a,b,c
+ * POST /api/v1/orders/items-for-dashboard
+ * @body { orderIds: string[] }
  * Returns order_items with master_product + supplier joins.
  */
-router.get(
+router.post(
   '/items-for-dashboard',
   requirePermission('order_items:read'),
   asyncHandler(async (req: Request, res: Response) => {
-    const orderIds = splitIds(req.query.orderIds);
+    const orderIds = parseOrderIds((req.body as { orderIds?: unknown })?.orderIds);
     if (orderIds.length === 0) {
       res.json([]);
       return;
@@ -341,19 +346,21 @@ router.get(
 );
 
 /**
- * GET /api/v1/orders/savings?companyId=&orderIds=a,b,c
+ * POST /api/v1/orders/savings
+ * @body { orderIds: string[], companyId?: string }
  * Savings calculations joined to order_items, scoped by company + order ids.
  */
-router.get(
+router.post(
   '/savings',
   requirePermission('savings_calculations:read'),
   asyncHandler(async (req: Request, res: Response) => {
-    const orderIds = splitIds(req.query.orderIds);
+    const body = (req.body ?? {}) as { orderIds?: unknown; companyId?: unknown };
+    const orderIds = parseOrderIds(body.orderIds);
     if (orderIds.length === 0) {
       res.json([]);
       return;
     }
-    const companyId = typeof req.query.companyId === 'string' ? req.query.companyId : null;
+    const companyId = typeof body.companyId === 'string' ? body.companyId : null;
 
     const token = req.accessToken!;
     let query = createUserClient(token).from('savings_calculations').select(SAVINGS_SELECT);

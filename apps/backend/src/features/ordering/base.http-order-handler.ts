@@ -92,6 +92,7 @@ export abstract class BaseHttpOrderHandler implements IOrderHandler {
     const res = await curlService.fetch(url, {
       cookies: this.sessionCookies || undefined,
       headers,
+      supplierKey: this.supplierName,
     });
     return { status: res.statusCode, body: res.body };
   }
@@ -110,6 +111,7 @@ export abstract class BaseHttpOrderHandler implements IOrderHandler {
         'content-type': 'application/x-www-form-urlencoded',
         ...headers,
       },
+      supplierKey: this.supplierName,
     });
     return { status: res.statusCode, body: res.body };
   }
@@ -128,6 +130,7 @@ export abstract class BaseHttpOrderHandler implements IOrderHandler {
         accept: 'application/json',
         ...headers,
       },
+      supplierKey: this.supplierName,
     });
     return { status: res.statusCode, body: res.body };
   }

@@ -1,0 +1,32 @@
+# Caddy config for the PriceCtrl production VPS.
+# Auto-manages TLS via Let's Encrypt (staging on first start, renewals forever).
+# Docker container names (backend, frontend) are DNS-resolvable on the
+# shared compose network.
+
+{
+  email carvalho.ie18@gmail.com
+}
+
+pricectrl.com {
+  encode gzip zstd
+
+  # Backend API
+  handle /api/* {
+    reverse_proxy backend:3000
+  }
+
+  # Health endpoints (no auth, used by uptime checks)
+  handle /health* {
+    reverse_proxy backend:3000
+  }
+
+  # Everything else → frontend nginx (SPA)
+  handle {
+    reverse_proxy frontend:80
+  }
+}
+
+# www → apex redirect
+www.pricectrl.com {
+  redir https://pricectrl.com{uri} permanent
+}
