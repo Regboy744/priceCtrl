@@ -1,0 +1,43 @@
+// Config types
+export type {
+  ScraperConfig,
+  SupplierMeta,
+  BrowserConfig,
+  AuthConfig,
+  AuthStep,
+  NavigateStep,
+  WaitForReadyStep,
+  HandleCookiesStep,
+  InputStep,
+  ClickStep,
+  WaitNavigationStep,
+  DelayStep,
+  MicroMovementsStep,
+  SelectorStrategy,
+  NavigationConfig,
+  CategoryDefinition,
+  SimpleCategoryDefinition,
+  DepartmentCategoryDefinition,
+  CustomCategoryDefinition,
+  PaginationConfig,
+  NavigationDelays,
+  NavigationPhase,
+  ExtractionConfig,
+  FieldExtraction,
+  ExtractionStrategy,
+  InputValueStrategy,
+  TextContentStrategy,
+  AttributeStrategy,
+  ComputedStrategy,
+  SupplierDefinition,
+} from './config.types.js';
+
+// Transformer types
+export type {
+  FieldTransformer,
+  TransformerMap,
+  RawProduct,
+  AvailabilityStatus,
+  StringTransformerOptions,
+  AvailabilityTransformerOptions,
+} from './transformer.types.js';

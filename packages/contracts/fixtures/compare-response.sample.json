@@ -1,0 +1,2750 @@
+{
+  "data_category": "price_comparison",
+  "description": "All comparisons use threshold logic. Set threshold to 0 for raw price comparison.",
+  "thresholds_used": {
+    "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": {
+      "supplier_name": "Musgrave Marketplace",
+      "percentage": 0
+    },
+    "d0a896bd-7657-4714-9231-d225f002e77e": {
+      "supplier_name": "Savage & Whitten",
+      "percentage": 0
+    },
+    "b67bf3cb-21cb-4709-857d-56351d201071": {
+      "supplier_name": "Barry Group",
+      "percentage": 0
+    },
+    "d9b27313-c486-4ad9-bc1a-5475886f8f87": {
+      "supplier_name": "O'Reillys Wholesale",
+      "percentage": 0
+    },
+    "72b2e238-f1f0-49b1-9e22-93227c6806ed": {
+      "supplier_name": "Value Centre",
+      "percentage": 0
+    }
+  },
+  "suppliers": [
+    {
+      "id": "623d45a7-23a7-4f0e-9706-b5c5cdf8700b",
+      "name": "Musgrave Marketplace",
+      "is_active": true
+    },
+    {
+      "id": "d0a896bd-7657-4714-9231-d225f002e77e",
+      "name": "Savage & Whitten",
+      "is_active": true
+    },
+    {
+      "id": "b67bf3cb-21cb-4709-857d-56351d201071",
+      "name": "Barry Group",
+      "is_active": true
+    },
+    {
+      "id": "d9b27313-c486-4ad9-bc1a-5475886f8f87",
+      "name": "O'Reillys Wholesale",
+      "is_active": true
+    },
+    {
+      "id": "72b2e238-f1f0-49b1-9e22-93227c6806ed",
+      "name": "Value Centre",
+      "is_active": true
+    }
+  ],
+  "supplier_constraints": {
+    "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": {
+      "requires_internal_product_id": false,
+      "max_items_per_request": 100
+    },
+    "b67bf3cb-21cb-4709-857d-56351d201071": {
+      "requires_internal_product_id": false,
+      "max_items_per_request": 100
+    },
+    "d9b27313-c486-4ad9-bc1a-5475886f8f87": {
+      "requires_internal_product_id": false,
+      "max_items_per_request": 32
+    },
+    "d0a896bd-7657-4714-9231-d225f002e77e": {
+      "requires_internal_product_id": true,
+      "max_items_per_request": 50
+    }
+  },
+  "products": [
+    {
+      "product_id": "4e124ab9-b59e-4e5b-af5c-784308f35939",
+      "article_code": "1005770 001",
+      "description": "1005770 001 FLAHAVANS QK OATS PORTABLE ORIGINAL | 44GRM 504661",
+      "ean_code": "5099801005005",
+      "unit_size": "44GRM",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 14,
+        "line_cost": 14
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 14.1,
+            "catalog_price": 14.1,
+            "line_total": 14.1,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 0.1,
+            "supplier_product_code": "58115",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.18,
+            "pack_count": 12,
+            "pack_unit_size": "44g"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 12.39,
+            "catalog_price": 12.39,
+            "line_total": 12.39,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -1.61,
+            "supplier_product_code": "533033",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.03,
+            "pack_count": 12,
+            "pack_unit_size": "12 x 44 g"
+          }
+        ],
+        "d9b27313-c486-4ad9-bc1a-5475886f8f87": [
+          {
+            "unit_price": 10.99,
+            "catalog_price": 10.99,
+            "line_total": 10.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -3.01,
+            "supplier_product_code": "010176",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.92,
+            "pack_count": 12,
+            "pack_unit_size": "44gm"
+          }
+        ],
+        "d0a896bd-7657-4714-9231-d225f002e77e": [
+          {
+            "unit_price": 11.39,
+            "catalog_price": 11.39,
+            "line_total": 11.39,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -2.61,
+            "supplier_product_code": "6592",
+            "internal_product_id": "4356",
+            "unit_cost_incl_vat": 0.95,
+            "pack_count": 12,
+            "pack_unit_size": "46gm"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "d9b27313-c486-4ad9-bc1a-5475886f8f87",
+        "winning_supplier_name": "O'Reillys Wholesale",
+        "winning_price": 10.99,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 3.01,
+        "threshold_percentage": 0,
+        "required_price_to_win": 14,
+        "supplier_price_difference_pct": 21.5,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "d8e9d66d-4224-40d1-bb86-bbc6cac40fc2",
+      "article_code": "1008313 000",
+      "description": "1008313 000 LUCOZADE CANS ORIGINAL 515230",
+      "ean_code": "5054267001374",
+      "unit_size": null,
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 22.57,
+        "line_cost": 22.57
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 22.69,
+            "catalog_price": 22.69,
+            "line_total": 22.69,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 0.12,
+            "supplier_product_code": "63062",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.16,
+            "pack_count": 24,
+            "pack_unit_size": "330ml int"
+          }
+        ],
+        "d9b27313-c486-4ad9-bc1a-5475886f8f87": [
+          {
+            "unit_price": 18.79,
+            "catalog_price": 18.79,
+            "line_total": 18.79,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -3.78,
+            "supplier_product_code": "042576",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.78,
+            "pack_count": 24,
+            "pack_unit_size": "330ml"
+          }
+        ],
+        "d0a896bd-7657-4714-9231-d225f002e77e": [
+          {
+            "unit_price": 18.99,
+            "catalog_price": 18.99,
+            "line_total": 18.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -3.58,
+            "supplier_product_code": "1724",
+            "internal_product_id": "3587",
+            "unit_cost_incl_vat": 0.97,
+            "pack_count": 24,
+            "pack_unit_size": "330ml"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "d9b27313-c486-4ad9-bc1a-5475886f8f87",
+        "winning_supplier_name": "O'Reillys Wholesale",
+        "winning_price": 18.79,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 3.78,
+        "threshold_percentage": 0,
+        "required_price_to_win": 22.57,
+        "supplier_price_difference_pct": 16.75,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "4b0338a4-a0c9-42db-b2b6-2b105095c437",
+      "article_code": "1008672 001",
+      "description": "1008672 001 VOLVIC NATURAL MINERAL WATER STILL | 1.5L 371365",
+      "ean_code": "3057640590993",
+      "unit_size": "1.5L",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 12.62,
+        "line_cost": 12.62
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 9.49,
+            "catalog_price": 9.49,
+            "line_total": 9.49,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -3.13,
+            "supplier_product_code": "2400322",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.97,
+            "pack_count": 12,
+            "pack_unit_size": "1.5l"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 10.99,
+            "catalog_price": 10.99,
+            "line_total": 10.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -1.63,
+            "supplier_product_code": "935811",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.13,
+            "pack_count": 12,
+            "pack_unit_size": "12 x 1.5 L"
+          }
+        ],
+        "d9b27313-c486-4ad9-bc1a-5475886f8f87": [
+          {
+            "unit_price": 9.59,
+            "catalog_price": 9.59,
+            "line_total": 9.59,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -3.03,
+            "supplier_product_code": "042336",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.8,
+            "pack_count": 12,
+            "pack_unit_size": "1.5ltr"
+          }
+        ],
+        "d0a896bd-7657-4714-9231-d225f002e77e": [
+          {
+            "unit_price": 9.25,
+            "catalog_price": 9.25,
+            "line_total": 9.25,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -3.37,
+            "supplier_product_code": "180546",
+            "internal_product_id": "11022",
+            "unit_cost_incl_vat": 0.95,
+            "pack_count": 12,
+            "pack_unit_size": "1.5ltr"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "d9b27313-c486-4ad9-bc1a-5475886f8f87",
+        "winning_supplier_name": "O'Reillys Wholesale",
+        "winning_price": 9.59,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 3.03,
+        "threshold_percentage": 0,
+        "required_price_to_win": 12.62,
+        "supplier_price_difference_pct": 24.01,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "79942f2c-295b-4ba9-bf4b-fa0645a114d9",
+      "article_code": "1008703 008",
+      "description": "1008703 008 PEPSI MAX NO SUGAR COLA BOTTLE| 2LTRX8 371723",
+      "ean_code": "4062139010363",
+      "unit_size": "2LTRX8",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 15.82,
+        "line_cost": 15.82
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 14.35,
+            "catalog_price": 14.35,
+            "line_total": 14.35,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -1.47,
+            "supplier_product_code": "2400051",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 2.21,
+            "pack_count": 8,
+            "pack_unit_size": "2l"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 19.09,
+            "catalog_price": 19.09,
+            "line_total": 19.09,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 3.27,
+            "supplier_product_code": "936034",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 2.94,
+            "pack_count": 8,
+            "pack_unit_size": "8 x 2 L"
+          }
+        ],
+        "d9b27313-c486-4ad9-bc1a-5475886f8f87": [
+          {
+            "unit_price": 13.85,
+            "catalog_price": 13.85,
+            "line_total": 13.85,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -1.97,
+            "supplier_product_code": "042827",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.73,
+            "pack_count": 8,
+            "pack_unit_size": "2ltr"
+          }
+        ],
+        "d0a896bd-7657-4714-9231-d225f002e77e": [
+          {
+            "unit_price": 13.89,
+            "catalog_price": 13.89,
+            "line_total": 13.89,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -1.93,
+            "supplier_product_code": "180428",
+            "internal_product_id": "10909",
+            "unit_cost_incl_vat": 2.14,
+            "pack_count": 8,
+            "pack_unit_size": "2ltr"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "d9b27313-c486-4ad9-bc1a-5475886f8f87",
+        "winning_supplier_name": "O'Reillys Wholesale",
+        "winning_price": 13.85,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 1.97,
+        "threshold_percentage": 0,
+        "required_price_to_win": 15.82,
+        "supplier_price_difference_pct": 12.45,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "38dadc31-bdc3-487f-84d1-2c05cbbcdbfd",
+      "article_code": "1009005 009",
+      "description": "1009005 009 COCA-COLA ZERO CAFFEINE FREE BOTTLE | 500MLS 372224",
+      "ean_code": "5000112635652",
+      "unit_size": "500MLS",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 23.67,
+        "line_cost": 23.67
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 22.99,
+            "catalog_price": 22.99,
+            "line_total": 22.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -0.68,
+            "supplier_product_code": "2400259",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.18,
+            "pack_count": 24,
+            "pack_unit_size": "500ml"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 23.65,
+            "catalog_price": 23.65,
+            "line_total": 23.65,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -0.02,
+            "supplier_product_code": "936277",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.21,
+            "pack_count": 24,
+            "pack_unit_size": "24 x 500 ml"
+          }
+        ],
+        "d0a896bd-7657-4714-9231-d225f002e77e": [
+          {
+            "unit_price": 21.99,
+            "catalog_price": 21.99,
+            "line_total": 21.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -1.68,
+            "supplier_product_code": "180488",
+            "internal_product_id": "10994",
+            "unit_cost_incl_vat": 1.13,
+            "pack_count": 24,
+            "pack_unit_size": "500ml"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "d0a896bd-7657-4714-9231-d225f002e77e",
+        "winning_supplier_name": "Savage & Whitten",
+        "winning_price": 21.99,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 1.68,
+        "threshold_percentage": 0,
+        "required_price_to_win": 23.67,
+        "supplier_price_difference_pct": 7.1,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "fd48c99f-b435-4ff5-84e1-38c0d0ee0eb6",
+      "article_code": "1009117 003",
+      "description": "1009117 003 COCA COLA BOTTLE | 2LTR 372176",
+      "ean_code": "5000112667240",
+      "unit_size": "2LTR",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 17.85,
+        "line_cost": 17.85
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 24.49,
+            "catalog_price": 24.49,
+            "line_total": 24.49,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 6.64,
+            "supplier_product_code": "2400192",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 3.77,
+            "pack_count": 8,
+            "pack_unit_size": "2l"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 22.95,
+            "catalog_price": 22.95,
+            "line_total": 22.95,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 5.1,
+            "supplier_product_code": "936205",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 3.53,
+            "pack_count": 8,
+            "pack_unit_size": "8 x 2 L"
+          }
+        ],
+        "d9b27313-c486-4ad9-bc1a-5475886f8f87": [
+          {
+            "unit_price": 23.19,
+            "catalog_price": 23.19,
+            "line_total": 23.19,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 5.34,
+            "supplier_product_code": "042920",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 2.9,
+            "pack_count": 8,
+            "pack_unit_size": "2ltr"
+          }
+        ],
+        "d0a896bd-7657-4714-9231-d225f002e77e": [
+          {
+            "unit_price": 24.25,
+            "catalog_price": 24.25,
+            "line_total": 24.25,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 6.4,
+            "supplier_product_code": "180523",
+            "internal_product_id": "10842",
+            "unit_cost_incl_vat": 3.73,
+            "pack_count": 8,
+            "pack_unit_size": "2ltr"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": null,
+        "winning_supplier_name": null,
+        "winning_price": 17.85,
+        "order_is_best": true,
+        "best_price_source": "order",
+        "potential_savings": null,
+        "threshold_percentage": 0,
+        "required_price_to_win": 17.85,
+        "supplier_price_difference_pct": -29.92,
+        "threshold_met": false
+      }
+    },
+    {
+      "product_id": "6f0202ae-d6df-4c19-8001-34067c17a843",
+      "article_code": "1009130 004",
+      "description": "1009130 004 COCA COLA CAN | 330MLS 372380",
+      "ean_code": "5000112626940",
+      "unit_size": "330MLS",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 17.15,
+        "line_cost": 17.15
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 16.39,
+            "catalog_price": 16.39,
+            "line_total": 16.39,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -0.76,
+            "supplier_product_code": "2400207",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.84,
+            "pack_count": 24,
+            "pack_unit_size": "330ml"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 18.19,
+            "catalog_price": 18.19,
+            "line_total": 18.19,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 1.04,
+            "supplier_product_code": "936223",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.93,
+            "pack_count": 24,
+            "pack_unit_size": "24 x 330 ml"
+          }
+        ],
+        "d9b27313-c486-4ad9-bc1a-5475886f8f87": [
+          {
+            "unit_price": 15.99,
+            "catalog_price": 15.99,
+            "line_total": 15.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -1.16,
+            "supplier_product_code": "042814",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.67,
+            "pack_count": 24,
+            "pack_unit_size": "330ml"
+          }
+        ],
+        "d0a896bd-7657-4714-9231-d225f002e77e": [
+          {
+            "unit_price": 16.39,
+            "catalog_price": 16.39,
+            "line_total": 16.39,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -0.76,
+            "supplier_product_code": "180501",
+            "internal_product_id": "10880",
+            "unit_cost_incl_vat": 0.84,
+            "pack_count": 24,
+            "pack_unit_size": "330ml"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "d9b27313-c486-4ad9-bc1a-5475886f8f87",
+        "winning_supplier_name": "O'Reillys Wholesale",
+        "winning_price": 15.99,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 1.16,
+        "threshold_percentage": 0,
+        "required_price_to_win": 17.15,
+        "supplier_price_difference_pct": 6.76,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "508ec66c-021b-480f-a5e4-cb9d0d084ea9",
+      "article_code": "1012826 006",
+      "description": "1012826 006 RED BULL ENERGY DRINK CAN | 250ML 372079",
+      "ean_code": "90456374",
+      "unit_size": "250ML",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 29.76,
+        "line_cost": 29.76
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 28.99,
+            "catalog_price": 28.99,
+            "line_total": 28.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -0.77,
+            "supplier_product_code": "2400187",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.49,
+            "pack_count": 24,
+            "pack_unit_size": "250ml"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 29.49,
+            "catalog_price": 29.49,
+            "line_total": 29.49,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -0.27,
+            "supplier_product_code": "935536",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.51,
+            "pack_count": 24,
+            "pack_unit_size": "24 x 250 ml"
+          }
+        ],
+        "d0a896bd-7657-4714-9231-d225f002e77e": [
+          {
+            "unit_price": 29.49,
+            "catalog_price": 29.49,
+            "line_total": 29.49,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -0.27,
+            "supplier_product_code": "180337",
+            "internal_product_id": "11159",
+            "unit_cost_incl_vat": 1.51,
+            "pack_count": 24,
+            "pack_unit_size": "250ml"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "b67bf3cb-21cb-4709-857d-56351d201071",
+        "winning_supplier_name": "Barry Group",
+        "winning_price": 28.99,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 0.77,
+        "threshold_percentage": 0,
+        "required_price_to_win": 29.76,
+        "supplier_price_difference_pct": 2.59,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "e97a8844-be78-4baa-aa8f-1461e545ab74",
+      "article_code": "1013407 020",
+      "description": "1013407 020 TAYTO HUNKY DORY CH CHEESE SP ONION| 37GRMX50 364437",
+      "ean_code": "5011096011110",
+      "unit_size": "37GRMX50",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 44.9,
+        "line_cost": 44.9
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 30.99,
+            "catalog_price": 30.99,
+            "line_total": 30.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -13.91,
+            "supplier_product_code": "140228",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.76,
+            "pack_count": 50,
+            "pack_unit_size": "dr"
+          }
+        ],
+        "d9b27313-c486-4ad9-bc1a-5475886f8f87": [
+          {
+            "unit_price": 34.95,
+            "catalog_price": 34.95,
+            "line_total": 34.95,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -9.95,
+            "supplier_product_code": "043470",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.7,
+            "pack_count": 50,
+            "pack_unit_size": "37gm"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "d9b27313-c486-4ad9-bc1a-5475886f8f87",
+        "winning_supplier_name": "O'Reillys Wholesale",
+        "winning_price": 34.95,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 9.95,
+        "threshold_percentage": 0,
+        "required_price_to_win": 44.9,
+        "supplier_price_difference_pct": 22.16,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "02eb272c-3bce-4d71-829f-27676c6c2962",
+      "article_code": "1015560 000",
+      "description": "EXTRA COOL BREEZE 10 PCE",
+      "ean_code": "42070719",
+      "unit_size": "14GRM",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 2,
+        "unit_cost": 18.5,
+        "line_cost": 37
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 15.19,
+            "catalog_price": 15.19,
+            "line_total": 30.38,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -6.62,
+            "supplier_product_code": "70488",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.62,
+            "pack_count": 30,
+            "pack_unit_size": "25g"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 17.69,
+            "catalog_price": 17.69,
+            "line_total": 35.38,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -1.62,
+            "supplier_product_code": "224273",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.73,
+            "pack_count": 30,
+            "pack_unit_size": "30 x 14 g"
+          }
+        ],
+        "d0a896bd-7657-4714-9231-d225f002e77e": [
+          {
+            "unit_price": 15.59,
+            "catalog_price": 15.59,
+            "line_total": 31.18,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -5.82,
+            "supplier_product_code": "6172",
+            "internal_product_id": "4303",
+            "unit_cost_incl_vat": 0.64,
+            "pack_count": 30,
+            "pack_unit_size": "10pce"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "b67bf3cb-21cb-4709-857d-56351d201071",
+        "winning_supplier_name": "Barry Group",
+        "winning_price": 15.19,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 6.62,
+        "threshold_percentage": 0,
+        "required_price_to_win": 18.5,
+        "supplier_price_difference_pct": 17.89,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "2c4557c1-9ea8-4c60-89ad-722f0d769679",
+      "article_code": "1015560 001",
+      "description": "1015560 001 EXTRA PEPPERMINT 10PCE| 14GRM 331120",
+      "ean_code": "40099361",
+      "unit_size": "14GRM",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 18.5,
+        "line_cost": 18.5
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 15.19,
+            "catalog_price": 15.19,
+            "line_total": 15.19,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -3.31,
+            "supplier_product_code": "70274",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.62,
+            "pack_count": 30,
+            "pack_unit_size": "14g"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 17.69,
+            "catalog_price": 17.69,
+            "line_total": 17.69,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -0.81,
+            "supplier_product_code": "331120",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.73,
+            "pack_count": 30,
+            "pack_unit_size": "30 x 14 g"
+          }
+        ],
+        "d0a896bd-7657-4714-9231-d225f002e77e": [
+          {
+            "unit_price": 15.59,
+            "catalog_price": 15.59,
+            "line_total": 15.59,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -2.91,
+            "supplier_product_code": "1320",
+            "internal_product_id": "3508",
+            "unit_cost_incl_vat": 0.64,
+            "pack_count": 30,
+            "pack_unit_size": "10 pce"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "b67bf3cb-21cb-4709-857d-56351d201071",
+        "winning_supplier_name": "Barry Group",
+        "winning_price": 15.19,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 3.31,
+        "threshold_percentage": 0,
+        "required_price_to_win": 18.5,
+        "supplier_price_difference_pct": 17.89,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "47109f4d-11ef-4398-86a3-5fd45a143d17",
+      "article_code": "1015836 004",
+      "description": "1015836 004 PEPSI CAN| 330MLS 377896",
+      "ean_code": "4062139013234",
+      "unit_size": "330MLS",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 20.86,
+        "line_cost": 20.86
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 14.99,
+            "catalog_price": 14.99,
+            "line_total": 14.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -5.87,
+            "supplier_product_code": "2400528",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.77,
+            "pack_count": 24,
+            "pack_unit_size": "330ml"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 11.99,
+            "catalog_price": 11.99,
+            "line_total": 11.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -8.87,
+            "supplier_product_code": "942132",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.61,
+            "pack_count": 24,
+            "pack_unit_size": "24 x 330 ml"
+          }
+        ],
+        "d0a896bd-7657-4714-9231-d225f002e77e": [
+          {
+            "unit_price": 13.89,
+            "catalog_price": 13.89,
+            "line_total": 13.89,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -6.97,
+            "supplier_product_code": "180402",
+            "internal_product_id": "10959",
+            "unit_cost_incl_vat": 0.71,
+            "pack_count": 24,
+            "pack_unit_size": "330ml"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "623d45a7-23a7-4f0e-9706-b5c5cdf8700b",
+        "winning_supplier_name": "Musgrave Marketplace",
+        "winning_price": 11.99,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 8.87,
+        "threshold_percentage": 0,
+        "required_price_to_win": 20.86,
+        "supplier_price_difference_pct": 42.52,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "faa19782-d494-4b27-86ce-d598394bc622",
+      "article_code": "1015836 005",
+      "description": "1015836 005 PEPSI MAX CAN | 330MLS 377907",
+      "ean_code": "4062139013838",
+      "unit_size": "330MLS",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 18.43,
+        "line_cost": 18.43
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 14.99,
+            "catalog_price": 14.99,
+            "line_total": 14.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -3.44,
+            "supplier_product_code": "2400529",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.77,
+            "pack_count": 24,
+            "pack_unit_size": "330ml"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 11.99,
+            "catalog_price": 11.99,
+            "line_total": 11.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -6.44,
+            "supplier_product_code": "942187",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.61,
+            "pack_count": 24,
+            "pack_unit_size": "24 x 330 ml"
+          }
+        ],
+        "d0a896bd-7657-4714-9231-d225f002e77e": [
+          {
+            "unit_price": 13.89,
+            "catalog_price": 13.89,
+            "line_total": 13.89,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -4.54,
+            "supplier_product_code": "180401",
+            "internal_product_id": "10958",
+            "unit_cost_incl_vat": 0.71,
+            "pack_count": 24,
+            "pack_unit_size": "330ml"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "623d45a7-23a7-4f0e-9706-b5c5cdf8700b",
+        "winning_supplier_name": "Musgrave Marketplace",
+        "winning_price": 11.99,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 6.44,
+        "threshold_percentage": 0,
+        "required_price_to_win": 18.43,
+        "supplier_price_difference_pct": 34.94,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "dc281739-c292-4cd2-ac52-e9781035a71c",
+      "article_code": "1017113 001",
+      "description": "1017113 001 LUCOZADE ENERGY ORIGINAL BOTTLE| 380MLS 372137",
+      "ean_code": "5054267013902",
+      "unit_size": "380MLS",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 21,
+        "line_cost": 21
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 18.99,
+            "catalog_price": 18.99,
+            "line_total": 18.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -2.01,
+            "supplier_product_code": "2400137",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.97,
+            "pack_count": 24,
+            "pack_unit_size": "380ml"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 18.99,
+            "catalog_price": 18.99,
+            "line_total": 18.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -2.01,
+            "supplier_product_code": "936160",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.97,
+            "pack_count": 24,
+            "pack_unit_size": "24 x 380 ml"
+          }
+        ],
+        "d0a896bd-7657-4714-9231-d225f002e77e": [
+          {
+            "unit_price": 18.99,
+            "catalog_price": 18.99,
+            "line_total": 18.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -2.01,
+            "supplier_product_code": "180303",
+            "internal_product_id": "11158",
+            "unit_cost_incl_vat": 0.97,
+            "pack_count": 24,
+            "pack_unit_size": "380ml"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "b67bf3cb-21cb-4709-857d-56351d201071",
+        "winning_supplier_name": "Barry Group",
+        "winning_price": 18.99,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 2.01,
+        "threshold_percentage": 0,
+        "required_price_to_win": 21,
+        "supplier_price_difference_pct": 9.57,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "de8e368f-1a40-44a7-8cea-aa86a6ea03c7",
+      "article_code": "1018294 001",
+      "description": "1018294 001 VOLVIC STILL NATURAL MINERAL WATER| 1LTR 371433",
+      "ean_code": "3057640590658",
+      "unit_size": "1LTR",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 12.1,
+        "line_cost": 12.1
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 8.99,
+            "catalog_price": 8.99,
+            "line_total": 8.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -3.11,
+            "supplier_product_code": "2400323",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.92,
+            "pack_count": 12,
+            "pack_unit_size": "1l"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 12.79,
+            "catalog_price": 12.79,
+            "line_total": 12.79,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 0.69,
+            "supplier_product_code": "935877",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.31,
+            "pack_count": 12,
+            "pack_unit_size": "12 x 1 L"
+          }
+        ],
+        "d9b27313-c486-4ad9-bc1a-5475886f8f87": [
+          {
+            "unit_price": 9.75,
+            "catalog_price": 9.75,
+            "line_total": 9.75,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -2.35,
+            "supplier_product_code": "042335",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.81,
+            "pack_count": 12,
+            "pack_unit_size": "1ltr"
+          }
+        ],
+        "d0a896bd-7657-4714-9231-d225f002e77e": [
+          {
+            "unit_price": 9.79,
+            "catalog_price": 9.79,
+            "line_total": 9.79,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -2.31,
+            "supplier_product_code": "180545",
+            "internal_product_id": "11021",
+            "unit_cost_incl_vat": 1,
+            "pack_count": 12,
+            "pack_unit_size": "1ltr"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "d9b27313-c486-4ad9-bc1a-5475886f8f87",
+        "winning_supplier_name": "O'Reillys Wholesale",
+        "winning_price": 9.75,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 2.35,
+        "threshold_percentage": 0,
+        "required_price_to_win": 12.1,
+        "supplier_price_difference_pct": 19.42,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "51f5f913-330a-4d91-9352-c653414b3b3e",
+      "article_code": "1019740 001",
+      "description": "1019740 001 BALLYGOWAN STILL WATER| 1LTR 371598",
+      "ean_code": "5391521836809",
+      "unit_size": "1LTR",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 11.89,
+        "line_cost": 11.89
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 10.6,
+            "catalog_price": 10.6,
+            "line_total": 10.6,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -1.29,
+            "supplier_product_code": "2400015",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.09,
+            "pack_count": 12,
+            "pack_unit_size": "1l"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 11.09,
+            "catalog_price": 11.09,
+            "line_total": 11.09,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -0.8,
+            "supplier_product_code": "935977",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.14,
+            "pack_count": 12,
+            "pack_unit_size": "12 x 1 L"
+          }
+        ],
+        "d0a896bd-7657-4714-9231-d225f002e77e": [
+          {
+            "unit_price": 9.49,
+            "catalog_price": 9.49,
+            "line_total": 9.49,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -2.4,
+            "supplier_product_code": "180411",
+            "internal_product_id": "10848",
+            "unit_cost_incl_vat": 0.97,
+            "pack_count": 12,
+            "pack_unit_size": "1ltr"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "d0a896bd-7657-4714-9231-d225f002e77e",
+        "winning_supplier_name": "Savage & Whitten",
+        "winning_price": 9.49,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 2.4,
+        "threshold_percentage": 0,
+        "required_price_to_win": 11.89,
+        "supplier_price_difference_pct": 20.19,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "54643d80-50b4-46ac-a0a3-e52c2dc17381",
+      "article_code": "1023917 005",
+      "description": "1023917 005 DIET COKE BOTTLE| 2LTRX8 372173",
+      "ean_code": "5000112633818",
+      "unit_size": "2LTRX8",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 13.5,
+        "line_cost": 13.5
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 19.55,
+            "catalog_price": 19.55,
+            "line_total": 19.55,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 6.05,
+            "supplier_product_code": "2400228",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 3.01,
+            "pack_count": 8,
+            "pack_unit_size": "2l"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 19.79,
+            "catalog_price": 19.79,
+            "line_total": 19.79,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 6.29,
+            "supplier_product_code": "936262",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 3.04,
+            "pack_count": 8,
+            "pack_unit_size": "8 x 2 L"
+          }
+        ],
+        "d9b27313-c486-4ad9-bc1a-5475886f8f87": [
+          {
+            "unit_price": 18.59,
+            "catalog_price": 18.59,
+            "line_total": 18.59,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 5.09,
+            "supplier_product_code": "042923",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 2.32,
+            "pack_count": 8,
+            "pack_unit_size": "2ltr"
+          }
+        ],
+        "d0a896bd-7657-4714-9231-d225f002e77e": [
+          {
+            "unit_price": 19.29,
+            "catalog_price": 19.29,
+            "line_total": 19.29,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 5.79,
+            "supplier_product_code": "180525",
+            "internal_product_id": "10997",
+            "unit_cost_incl_vat": 2.97,
+            "pack_count": 8,
+            "pack_unit_size": "2ltr"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": null,
+        "winning_supplier_name": null,
+        "winning_price": 13.5,
+        "order_is_best": true,
+        "best_price_source": "order",
+        "potential_savings": null,
+        "threshold_percentage": 0,
+        "required_price_to_win": 13.5,
+        "supplier_price_difference_pct": -37.7,
+        "threshold_met": false
+      }
+    },
+    {
+      "product_id": "4a093b48-a5fb-4978-bee0-6eec1c78c375",
+      "article_code": "1026526 002",
+      "description": "1026526 002 GUINNESS DRAUGHT STOUT CAN 8 PACK| 500MLS 371697",
+      "ean_code": "5000213028186",
+      "unit_size": "500MLS",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 31.45,
+        "line_cost": 31.45
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 33.49,
+            "catalog_price": 33.49,
+            "line_total": 33.49,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 2.04,
+            "supplier_product_code": "2500025",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 13.73,
+            "pack_count": 3,
+            "pack_unit_size": "4l"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 33.5,
+            "catalog_price": 33.5,
+            "line_total": 33.5,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 2.05,
+            "supplier_product_code": "936028",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 13.74,
+            "pack_count": 3,
+            "pack_unit_size": "3 x (8 x 500 ml)"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": null,
+        "winning_supplier_name": null,
+        "winning_price": 31.45,
+        "order_is_best": true,
+        "best_price_source": "order",
+        "potential_savings": null,
+        "threshold_percentage": 0,
+        "required_price_to_win": 31.45,
+        "supplier_price_difference_pct": -6.49,
+        "threshold_met": false
+      }
+    },
+    {
+      "product_id": "3de28d50-8d49-469d-a440-c68b76ec0144",
+      "article_code": "1027556 000",
+      "description": "ALKA SELTZER",
+      "ean_code": "5391404000815",
+      "unit_size": "10PCE",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 38.1,
+        "line_cost": 38.1
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 37.5,
+            "catalog_price": 37.5,
+            "line_total": 37.5,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -0.6,
+            "supplier_product_code": "1402379",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 3.75,
+            "pack_count": 10,
+            "pack_unit_size": "-"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "b67bf3cb-21cb-4709-857d-56351d201071",
+        "winning_supplier_name": "Barry Group",
+        "winning_price": 37.5,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 0.6,
+        "threshold_percentage": 0,
+        "required_price_to_win": 38.1,
+        "supplier_price_difference_pct": 1.57,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "b472e561-d3d5-47a7-81ad-f5c0294b6b9d",
+      "article_code": "1031690 006",
+      "description": "1031690 006 VIT HIT APPLE & ELDERFLOWER | 500ML 371010",
+      "ean_code": "5034033000800",
+      "unit_size": "500ML",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 18.32,
+        "line_cost": 18.32
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 14.49,
+            "catalog_price": 14.49,
+            "line_total": 14.49,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -3.83,
+            "supplier_product_code": "2400166",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.49,
+            "pack_count": 12,
+            "pack_unit_size": "500ml"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 17.7,
+            "catalog_price": 17.7,
+            "line_total": 17.7,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -0.62,
+            "supplier_product_code": "935476",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.81,
+            "pack_count": 12,
+            "pack_unit_size": "12 x 500 ml"
+          }
+        ],
+        "d0a896bd-7657-4714-9231-d225f002e77e": [
+          {
+            "unit_price": 15.29,
+            "catalog_price": 15.29,
+            "line_total": 15.29,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -3.03,
+            "supplier_product_code": "180353",
+            "internal_product_id": "11148",
+            "unit_cost_incl_vat": 1.57,
+            "pack_count": 12,
+            "pack_unit_size": "500ml"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "b67bf3cb-21cb-4709-857d-56351d201071",
+        "winning_supplier_name": "Barry Group",
+        "winning_price": 14.49,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 3.83,
+        "threshold_percentage": 0,
+        "required_price_to_win": 18.32,
+        "supplier_price_difference_pct": 20.91,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "663a4e30-c5ff-40d5-866d-975511cb4dbe",
+      "article_code": "1046419 000",
+      "description": "CADBURY BOOST DUO",
+      "ean_code": "7622201460792",
+      "unit_size": "63GRM",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 41.36,
+        "line_cost": 41.36
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 32.89,
+            "catalog_price": 32.89,
+            "line_total": 32.89,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -8.47,
+            "supplier_product_code": "1400299",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.26,
+            "pack_count": 32,
+            "pack_unit_size": "63g"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "b67bf3cb-21cb-4709-857d-56351d201071",
+        "winning_supplier_name": "Barry Group",
+        "winning_price": 32.89,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 8.47,
+        "threshold_percentage": 0,
+        "required_price_to_win": 41.36,
+        "supplier_price_difference_pct": 20.48,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "69cc4c7f-f169-47ae-af43-0e2fbac48846",
+      "article_code": "1989428 000",
+      "description": "Product 1989428 000",
+      "ean_code": "5000347035937",
+      "unit_size": null,
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 16.5,
+        "line_cost": 16.5
+      },
+      "supplier_prices": {
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 19.99,
+            "catalog_price": 19.99,
+            "line_total": 19.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 3.49,
+            "supplier_product_code": "933891",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 2.05,
+            "pack_count": 12,
+            "pack_unit_size": "12 x 75 ml"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": null,
+        "winning_supplier_name": null,
+        "winning_price": 16.5,
+        "order_is_best": true,
+        "best_price_source": "order",
+        "potential_savings": null,
+        "threshold_percentage": 0,
+        "required_price_to_win": 16.5,
+        "supplier_price_difference_pct": -21.15,
+        "threshold_met": false
+      }
+    },
+    {
+      "product_id": "4d93335b-79f8-4243-8cbf-4884989cb129",
+      "article_code": "1117951 007",
+      "description": "Product 1117951 007",
+      "ean_code": "3800020401231",
+      "unit_size": null,
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 28.07,
+        "line_cost": 28.07
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 26.49,
+            "catalog_price": 26.49,
+            "line_total": 26.49,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -1.58,
+            "supplier_product_code": "1402966",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.36,
+            "pack_count": 24,
+            "pack_unit_size": "68g"
+          }
+        ],
+        "d0a896bd-7657-4714-9231-d225f002e77e": [
+          {
+            "unit_price": 19.99,
+            "catalog_price": 19.99,
+            "line_total": 19.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -8.08,
+            "supplier_product_code": "184038",
+            "internal_product_id": "14198",
+            "unit_cost_incl_vat": 1.02,
+            "pack_count": 24,
+            "pack_unit_size": "64gm"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "d0a896bd-7657-4714-9231-d225f002e77e",
+        "winning_supplier_name": "Savage & Whitten",
+        "winning_price": 19.99,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 8.08,
+        "threshold_percentage": 0,
+        "required_price_to_win": 28.07,
+        "supplier_price_difference_pct": 28.79,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "406ab78a-462f-437f-bb83-c514c1b70a27",
+      "article_code": "1195826 002",
+      "description": "1195826 002 EXTRA ICE SPEARMINT 10 PIECE| 15GRM 722978",
+      "ean_code": "42211488",
+      "unit_size": "15GRM",
+      "requires_user_pick": true,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 17.31,
+        "line_cost": 17.31
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 18.2,
+            "catalog_price": 18.2,
+            "line_total": 18.2,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 0.89,
+            "supplier_product_code": "70230",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.75,
+            "pack_count": 30,
+            "pack_unit_size": "15g"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 16.75,
+            "catalog_price": 16.75,
+            "line_total": 16.75,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -0.56,
+            "supplier_product_code": "424371",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.69,
+            "pack_count": 30,
+            "pack_unit_size": "30 x 15 g"
+          }
+        ],
+        "d9b27313-c486-4ad9-bc1a-5475886f8f87": [
+          {
+            "unit_price": 15.18,
+            "catalog_price": 15.18,
+            "line_total": 15.18,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -2.13,
+            "supplier_product_code": "010370",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": null,
+            "pack_count": null,
+            "pack_unit_size": null
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": null,
+        "winning_supplier_name": null,
+        "winning_price": 17.31,
+        "order_is_best": true,
+        "best_price_source": "order",
+        "potential_savings": null,
+        "threshold_percentage": 0,
+        "required_price_to_win": 17.31,
+        "supplier_price_difference_pct": 0,
+        "threshold_met": false
+      }
+    },
+    {
+      "product_id": "0d7b1871-4aeb-4fc9-86cc-5ad2aed26d88",
+      "article_code": "1222815 001",
+      "description": "1222815 001 COCA COLA ZERO CAN | 330MLS 372239",
+      "ean_code": "5000112630664",
+      "unit_size": "330MLS",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 15.55,
+        "line_cost": 15.55
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 14.39,
+            "catalog_price": 14.39,
+            "line_total": 14.39,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -1.16,
+            "supplier_product_code": "2400256",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.74,
+            "pack_count": 24,
+            "pack_unit_size": "330ml"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 15.6,
+            "catalog_price": 15.6,
+            "line_total": 15.6,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 0.05,
+            "supplier_product_code": "936222",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.8,
+            "pack_count": 24,
+            "pack_unit_size": "24 x 330 ml"
+          }
+        ],
+        "d9b27313-c486-4ad9-bc1a-5475886f8f87": [
+          {
+            "unit_price": 14.25,
+            "catalog_price": 14.25,
+            "line_total": 14.25,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -1.3,
+            "supplier_product_code": "042901",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.59,
+            "pack_count": 24,
+            "pack_unit_size": "330ml"
+          }
+        ],
+        "d0a896bd-7657-4714-9231-d225f002e77e": [
+          {
+            "unit_price": 14.39,
+            "catalog_price": 14.39,
+            "line_total": 14.39,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -1.16,
+            "supplier_product_code": "180502",
+            "internal_product_id": "10881",
+            "unit_cost_incl_vat": 0.74,
+            "pack_count": 24,
+            "pack_unit_size": "330ml"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "d9b27313-c486-4ad9-bc1a-5475886f8f87",
+        "winning_supplier_name": "O'Reillys Wholesale",
+        "winning_price": 14.25,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 1.3,
+        "threshold_percentage": 0,
+        "required_price_to_win": 15.55,
+        "supplier_price_difference_pct": 8.36,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "787663d7-73f1-4ad2-ac12-9778efe4ebd4",
+      "article_code": "1454483 000",
+      "description": "AQUAFRESH COMPLETE CARE TOOTHBRUSH",
+      "ean_code": "5054563925817",
+      "unit_size": "1PCE",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 19.93,
+        "line_cost": 19.93
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 20,
+            "catalog_price": 20,
+            "line_total": 20,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 0.07,
+            "supplier_product_code": "1402227",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 2.05,
+            "pack_count": 12,
+            "pack_unit_size": "-"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": null,
+        "winning_supplier_name": null,
+        "winning_price": 19.93,
+        "order_is_best": true,
+        "best_price_source": "order",
+        "potential_savings": null,
+        "threshold_percentage": 0,
+        "required_price_to_win": 19.93,
+        "supplier_price_difference_pct": -0.35,
+        "threshold_met": false
+      }
+    },
+    {
+      "product_id": "437de451-7f37-4a52-8894-c8a8556cebf7",
+      "article_code": "1530123 005",
+      "description": "1530123 005 KELLOGG'S CORN FLAKES CEREAL | 670GRM 375758",
+      "ean_code": "5059319033501",
+      "unit_size": "670GRM",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 51.15,
+        "line_cost": 51.15
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 32.99,
+            "catalog_price": 32.99,
+            "line_total": 32.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -18.16,
+            "supplier_product_code": "1402318",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 2.75,
+            "pack_count": 12,
+            "pack_unit_size": "670g"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 51.09,
+            "catalog_price": 51.09,
+            "line_total": 51.09,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -0.06,
+            "supplier_product_code": "938402",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 4.26,
+            "pack_count": 12,
+            "pack_unit_size": "12 x 670 g"
+          }
+        ],
+        "d0a896bd-7657-4714-9231-d225f002e77e": [
+          {
+            "unit_price": 33.99,
+            "catalog_price": 33.99,
+            "line_total": 33.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -17.16,
+            "supplier_product_code": "181688",
+            "internal_product_id": "11818",
+            "unit_cost_incl_vat": 2.83,
+            "pack_count": 12,
+            "pack_unit_size": "670g"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "b67bf3cb-21cb-4709-857d-56351d201071",
+        "winning_supplier_name": "Barry Group",
+        "winning_price": 32.99,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 18.16,
+        "threshold_percentage": 0,
+        "required_price_to_win": 51.15,
+        "supplier_price_difference_pct": 35.5,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "4924ef84-72bc-4faa-9147-0f6aac6f66a6",
+      "article_code": "1566167 000",
+      "description": "YORKIE DUO BAR",
+      "ean_code": "7613033126390",
+      "unit_size": "72GRM",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 28.07,
+        "line_cost": 28.07
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 26.49,
+            "catalog_price": 26.49,
+            "line_total": 26.49,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -1.58,
+            "supplier_product_code": "69178",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.36,
+            "pack_count": 24,
+            "pack_unit_size": "72g"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 26.99,
+            "catalog_price": 26.99,
+            "line_total": 26.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -1.08,
+            "supplier_product_code": "211746",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.38,
+            "pack_count": 24,
+            "pack_unit_size": "24 x 72 g"
+          }
+        ],
+        "d9b27313-c486-4ad9-bc1a-5475886f8f87": [
+          {
+            "unit_price": 19.95,
+            "catalog_price": 19.95,
+            "line_total": 19.95,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -8.12,
+            "supplier_product_code": "014401",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.83,
+            "pack_count": 24,
+            "pack_unit_size": "72gm"
+          }
+        ],
+        "d0a896bd-7657-4714-9231-d225f002e77e": [
+          {
+            "unit_price": 19.99,
+            "catalog_price": 19.99,
+            "line_total": 19.99,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -8.08,
+            "supplier_product_code": "110127",
+            "internal_product_id": "1695",
+            "unit_cost_incl_vat": 1.02,
+            "pack_count": 24,
+            "pack_unit_size": "72g"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "d9b27313-c486-4ad9-bc1a-5475886f8f87",
+        "winning_supplier_name": "O'Reillys Wholesale",
+        "winning_price": 19.95,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 8.12,
+        "threshold_percentage": 0,
+        "required_price_to_win": 28.07,
+        "supplier_price_difference_pct": 28.93,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "c2eda885-d87d-4fed-a58b-de82b0c6d48e",
+      "article_code": "1801422 002",
+      "description": "1801422 002 KARPACKIE PREMIUM CAN 4PK �7| 440MLS 373847",
+      "ean_code": "5900535021257",
+      "unit_size": "440MLS",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 29.04,
+        "line_cost": 29.04
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 27.19,
+            "catalog_price": 27.19,
+            "line_total": 27.19,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -1.85,
+            "supplier_product_code": "2500143",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 5.57,
+            "pack_count": 6,
+            "pack_unit_size": "1.76l"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 27.5,
+            "catalog_price": 27.5,
+            "line_total": 27.5,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -1.54,
+            "supplier_product_code": "937223",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 5.64,
+            "pack_count": 6,
+            "pack_unit_size": "6 x (4 x 440 ml)"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "b67bf3cb-21cb-4709-857d-56351d201071",
+        "winning_supplier_name": "Barry Group",
+        "winning_price": 27.19,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 1.85,
+        "threshold_percentage": 0,
+        "required_price_to_win": 29.04,
+        "supplier_price_difference_pct": 6.37,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "8a171e35-3fe4-4dd4-975c-bc98946d55d2",
+      "article_code": "1803639 002",
+      "description": "1803639 002 HEINEKEN LAGER CAN 6PK| 500MLS X 4 371021",
+      "ean_code": "8712000061258",
+      "unit_size": "500MLS",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 35.37,
+        "line_cost": 35.37
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 39.79,
+            "catalog_price": 39.79,
+            "line_total": 39.79,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 4.42,
+            "supplier_product_code": "2500112",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 12.24,
+            "pack_count": 4,
+            "pack_unit_size": "3l"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 34.5,
+            "catalog_price": 34.5,
+            "line_total": 34.5,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -0.87,
+            "supplier_product_code": "935645",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 10.61,
+            "pack_count": 4,
+            "pack_unit_size": "4 x (6 x 500 ml)"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "623d45a7-23a7-4f0e-9706-b5c5cdf8700b",
+        "winning_supplier_name": "Musgrave Marketplace",
+        "winning_price": 34.5,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 0.87,
+        "threshold_percentage": 0,
+        "required_price_to_win": 35.37,
+        "supplier_price_difference_pct": 2.46,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "5ef9a62e-8ae7-4aa4-ace5-3cb0c4950d74",
+      "article_code": "1864998 001",
+      "description": "1864998 001 DEEP RIVER ROCK STILL WATER | 1.5LTR 372184",
+      "ean_code": "5011020104772",
+      "unit_size": "1.5LTR",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 10.71,
+        "line_cost": 10.71
+      },
+      "supplier_prices": {
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 11.45,
+            "catalog_price": 11.45,
+            "line_total": 11.45,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 0.74,
+            "supplier_product_code": "936306",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.17,
+            "pack_count": 12,
+            "pack_unit_size": "12 x 1.5 L"
+          }
+        ],
+        "d9b27313-c486-4ad9-bc1a-5475886f8f87": [
+          {
+            "unit_price": 10.59,
+            "catalog_price": 10.59,
+            "line_total": 10.59,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -0.12,
+            "supplier_product_code": "043110",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.88,
+            "pack_count": 12,
+            "pack_unit_size": "1.5ltr"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "d9b27313-c486-4ad9-bc1a-5475886f8f87",
+        "winning_supplier_name": "O'Reillys Wholesale",
+        "winning_price": 10.59,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 0.12,
+        "threshold_percentage": 0,
+        "required_price_to_win": 10.71,
+        "supplier_price_difference_pct": 1.12,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "14ed9c5e-2dfd-47bc-90d2-780a303ec2be",
+      "article_code": "1865008 001",
+      "description": "1865008 001 DEEP RIVER ROCK SPARKLING WATER | 1.5LTR 372297",
+      "ean_code": "5011020104802",
+      "unit_size": "1.5LTR",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 10.71,
+        "line_cost": 10.71
+      },
+      "supplier_prices": {
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 11.45,
+            "catalog_price": 11.45,
+            "line_total": 11.45,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 0.74,
+            "supplier_product_code": "936308",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.17,
+            "pack_count": 12,
+            "pack_unit_size": "12 x 1.5 L"
+          }
+        ],
+        "d9b27313-c486-4ad9-bc1a-5475886f8f87": [
+          {
+            "unit_price": 10.59,
+            "catalog_price": 10.59,
+            "line_total": 10.59,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -0.12,
+            "supplier_product_code": "043111",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 0.88,
+            "pack_count": 12,
+            "pack_unit_size": "1.5ltr"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "d9b27313-c486-4ad9-bc1a-5475886f8f87",
+        "winning_supplier_name": "O'Reillys Wholesale",
+        "winning_price": 10.59,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 0.12,
+        "threshold_percentage": 0,
+        "required_price_to_win": 10.71,
+        "supplier_price_difference_pct": 1.12,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "c882cb74-cfd2-411b-99b4-1e6b54f2173b",
+      "article_code": "1956787 000",
+      "description": "TENNENTS LAGER CAN 8 PACK",
+      "ean_code": "5391516936262",
+      "unit_size": "440MLS",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 2,
+        "unit_cost": 24.7,
+        "line_cost": 49.4
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 23.99,
+            "catalog_price": 23.99,
+            "line_total": 47.98,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -1.42,
+            "supplier_product_code": "2500216",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 9.84,
+            "pack_count": 3,
+            "pack_unit_size": "3.52l"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 26.25,
+            "catalog_price": 26.25,
+            "line_total": 52.5,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": 3.1,
+            "supplier_product_code": "945744",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 10.76,
+            "pack_count": 3,
+            "pack_unit_size": "3 x (8 x 440 ml)"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "b67bf3cb-21cb-4709-857d-56351d201071",
+        "winning_supplier_name": "Barry Group",
+        "winning_price": 23.99,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 1.42,
+        "threshold_percentage": 0,
+        "required_price_to_win": 24.7,
+        "supplier_price_difference_pct": 2.87,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "84402278-2d6f-44d4-90ad-a306e47e8922",
+      "article_code": "1964681 000",
+      "description": "PFIZER PARACETAMOL TABLETS 500MG",
+      "ean_code": "5054563244918",
+      "unit_size": "12PCE",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 22.76,
+        "line_cost": 22.76
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 19.3,
+            "catalog_price": 19.3,
+            "line_total": 19.3,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -3.46,
+            "supplier_product_code": "1402901",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.61,
+            "pack_count": 12,
+            "pack_unit_size": "-"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 19.05,
+            "catalog_price": 19.05,
+            "line_total": 19.05,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -3.71,
+            "supplier_product_code": "945078",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.59,
+            "pack_count": 12,
+            "pack_unit_size": "12 x 12 Piece"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "623d45a7-23a7-4f0e-9706-b5c5cdf8700b",
+        "winning_supplier_name": "Musgrave Marketplace",
+        "winning_price": 19.05,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 3.71,
+        "threshold_percentage": 0,
+        "required_price_to_win": 22.76,
+        "supplier_price_difference_pct": 16.3,
+        "threshold_met": true
+      }
+    },
+    {
+      "product_id": "756fc6dd-4ef2-4c26-9431-088078db5afd",
+      "article_code": "1964979 000",
+      "description": "PARAEXTRA HARD CAPSULES 10 PACK",
+      "ean_code": "5054563245892",
+      "unit_size": "10PCE",
+      "requires_user_pick": false,
+      "order": {
+        "quantity": 1,
+        "unit_cost": 27.68,
+        "line_cost": 27.68
+      },
+      "supplier_prices": {
+        "b67bf3cb-21cb-4709-857d-56351d201071": [
+          {
+            "unit_price": 23.5,
+            "catalog_price": 23.5,
+            "line_total": 23.5,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -4.18,
+            "supplier_product_code": "1402887",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 1.96,
+            "pack_count": 12,
+            "pack_unit_size": "-"
+          }
+        ],
+        "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": [
+          {
+            "unit_price": 27.5,
+            "catalog_price": 27.5,
+            "line_total": 27.5,
+            "is_special_price": false,
+            "special_price_notes": null,
+            "valid_until": null,
+            "availability_status": "available",
+            "difference_vs_order": -0.18,
+            "supplier_product_code": "944526",
+            "internal_product_id": null,
+            "unit_cost_incl_vat": 2.29,
+            "pack_count": 12,
+            "pack_unit_size": "12 x 10 Piece"
+          }
+        ]
+      },
+      "evaluation": {
+        "winning_supplier_id": "b67bf3cb-21cb-4709-857d-56351d201071",
+        "winning_supplier_name": "Barry Group",
+        "winning_price": 23.5,
+        "order_is_best": false,
+        "best_price_source": "supplier",
+        "potential_savings": 4.18,
+        "threshold_percentage": 0,
+        "required_price_to_win": 27.68,
+        "supplier_price_difference_pct": 15.1,
+        "threshold_met": true
+      }
+    }
+  ],
+  "summary": {
+    "counts": {
+      "total_items_submitted": 38,
+      "products_found": 35,
+      "products_not_found": [
+        "1409646 001",
+        "1008795 004",
+        "1020222 003"
+      ],
+      "products_unpriced": [],
+      "suppliers_compared": 5
+    },
+    "order_totals": {
+      "total_order_value": 1453.12,
+      "matched_order_value": 843.1
+    },
+    "evaluation_results": {
+      "products_order_is_best": 6,
+      "products_supplier_is_best": 29,
+      "products_below_threshold": 0,
+      "max_potential_savings": 118.18,
+      "recommendation": "mixed",
+      "best_overall": {
+        "source": "order",
+        "supplier_id": null,
+        "supplier_name": null,
+        "total_cost": 843.1,
+        "savings_vs_order": 0
+      }
+    },
+    "supplier_rankings": [
+      {
+        "supplier_id": "b67bf3cb-21cb-4709-857d-56351d201071",
+        "supplier_name": "Barry Group",
+        "products_won": 11,
+        "total_cost_if_all_from_here": 732.85,
+        "won_products_supplier_cost": 310.09,
+        "won_products_order_cost": 361.31,
+        "savings_on_won_products": 51.22,
+        "savings_percentage": 14.18
+      },
+      {
+        "supplier_id": "d9b27313-c486-4ad9-bc1a-5475886f8f87",
+        "supplier_name": "O'Reillys Wholesale",
+        "products_won": 11,
+        "total_cost_if_all_from_here": 226.25,
+        "won_products_supplier_cost": 169.29,
+        "won_products_order_cost": 204.2,
+        "savings_on_won_products": 34.91,
+        "savings_percentage": 17.1
+      },
+      {
+        "supplier_id": "623d45a7-23a7-4f0e-9706-b5c5cdf8700b",
+        "supplier_name": "Musgrave Marketplace",
+        "products_won": 4,
+        "total_cost_if_all_from_here": 642.03,
+        "won_products_supplier_cost": 77.53,
+        "won_products_order_cost": 97.42,
+        "savings_on_won_products": 19.89,
+        "savings_percentage": 20.42
+      },
+      {
+        "supplier_id": "d0a896bd-7657-4714-9231-d225f002e77e",
+        "supplier_name": "Savage & Whitten",
+        "products_won": 3,
+        "total_cost_if_all_from_here": 381.4,
+        "won_products_supplier_cost": 51.47,
+        "won_products_order_cost": 63.63,
+        "savings_on_won_products": 12.16,
+        "savings_percentage": 19.11
+      },
+      {
+        "supplier_id": "72b2e238-f1f0-49b1-9e22-93227c6806ed",
+        "supplier_name": "Value Centre",
+        "products_won": 0,
+        "total_cost_if_all_from_here": 0,
+        "won_products_supplier_cost": 0,
+        "won_products_order_cost": 0,
+        "savings_on_won_products": 0,
+        "savings_percentage": 0
+      },
+      {
+        "supplier_id": "local_order",
+        "supplier_name": "Local Order",
+        "products_won": 6,
+        "total_cost_if_all_from_here": 843.1,
+        "won_products_supplier_cost": 116.54,
+        "won_products_order_cost": 116.54,
+        "savings_on_won_products": 0,
+        "savings_percentage": 0
+      }
+    ],
+    "thresholds_applied": {
+      "623d45a7-23a7-4f0e-9706-b5c5cdf8700b": 0,
+      "d0a896bd-7657-4714-9231-d225f002e77e": 0,
+      "b67bf3cb-21cb-4709-857d-56351d201071": 0,
+      "d9b27313-c486-4ad9-bc1a-5475886f8f87": 0,
+      "72b2e238-f1f0-49b1-9e22-93227c6806ed": 0
+    }
+  }
+}

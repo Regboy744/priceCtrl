@@ -1,0 +1,36 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      secrets:
+        - github_token
+    container_name: retailctrl-backend
+    ports:
+      - "${PORT:-3000}:${PORT:-3000}"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - SCRAPE_HEADLESS=true
+      - ENABLE_SCHEDULER=true
+    # Chromium needs adequate shared memory; prevents crashes under load
+    shm_size: "1gb"
+    # Cap memory to prevent runaway Chromium processes from exhausting the host
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+    restart: unless-stopped
+    volumes:
+      - screenshots:/app/screenshots
+
+volumes:
+  screenshots:
+    driver: local
+
+# BuildKit secret: resolved from GITHUB_PERSONAL_ACCESS_TOKEN on the host.
+# Only used during `docker compose build`; never persisted in image layers.
+secrets:
+  github_token:
+    environment: GITHUB_PERSONAL_ACCESS_TOKEN
