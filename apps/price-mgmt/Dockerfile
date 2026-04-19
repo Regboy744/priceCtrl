@@ -67,4 +67,7 @@ WORKDIR /repo/apps/price-mgmt
 EXPOSE 3001
 
 ENTRYPOINT ["/repo/apps/price-mgmt/docker-entrypoint.sh"]
-CMD ["pnpm", "dev"]
+# Production: run the compiled output. `dev` uses tsc --watch + node --watch,
+# which tries to FS-watch the .env file — env vars come from docker env_file
+# here, so watching a nonexistent path crashes the process in a restart loop.
+CMD ["pnpm", "start"]
